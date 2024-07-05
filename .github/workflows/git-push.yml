@@ -27,7 +27,7 @@ jobs:
           commit-message: ${{ github.event.commits[0].message }}
           target-branch: main
       - name: Pushes to another repository
-        id: push_directory
+        id: push_directory_aspyn
         uses: cpina/github-action-push-to-another-repository@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.ASPYN_GITHUB_TOKEN }}
