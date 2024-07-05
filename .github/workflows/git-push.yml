@@ -20,10 +20,22 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.HARRISON_GITHUB_TOKEN }}
         with:
-          source-directory: 'output'
+          source-directory: "output"
           destination-github-username: akh9804
           destination-repository-name: book_review
           user-email: ${{ secrets.HARRISON_GITHUB_EMAIL }}
+          commit-message: ${{ github.event.commits[0].message }}
+          target-branch: main
+      - name: Pushes to another repository
+        id: push_directory
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.ASPYN_GITHUB_TOKEN }}
+        with:
+          source-directory: "output"
+          destination-github-username: ksj12172
+          destination-repository-name: book_review
+          user-email: ${{ secrets.ASPYN_GITHUB_EMAIL }}
           commit-message: ${{ github.event.commits[0].message }}
           target-branch: main
       - name: Test get variable exported by push-to-another-repository
