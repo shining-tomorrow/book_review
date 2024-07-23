@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import type { PutBlobResult } from "@vercel/blob";
-import Image from "next/image";
-import { FormEvent, useRef, useState } from "react";
+import type {PutBlobResult} from '@vercel/blob';
+import Image from 'next/image';
+import {FormEvent, useRef, useState} from 'react';
 
 export default function Upload() {
   const inputFileRef = useRef<HTMLInputElement>(null);
@@ -12,13 +12,13 @@ export default function Upload() {
     event.preventDefault();
 
     if (!inputFileRef.current?.files) {
-      throw new Error("No file selected");
+      throw new Error('No file selected');
     }
 
     const file = inputFileRef.current.files[0];
 
     const response = await fetch(`/api/upload?filename=${file.name}`, {
-      method: "POST",
+      method: 'POST',
       body: file,
     });
 
@@ -39,13 +39,13 @@ export default function Upload() {
           Blob url: <a href={blob.url}>{blob.url}</a>
           <Image
             src={blob.url}
-            alt={""}
+            alt={''}
             width={0}
             height={0}
             sizes="500px"
             style={{
-              width: "100%",
-              height: "auto",
+              width: '100%',
+              height: 'auto',
             }}
           />
         </div>

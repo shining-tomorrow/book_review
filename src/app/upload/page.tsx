@@ -1,6 +1,6 @@
-import Upload from "@/app/ui/upload/upload";
-import { list } from "@vercel/blob";
-import Image from "next/image";
+import Upload from '@/app/ui/upload/upload';
+import {list} from '@vercel/blob';
+import Image from 'next/image';
 
 export default async function UploadPage() {
   const response = await list();
@@ -23,8 +23,8 @@ export default async function UploadPage() {
               height={0}
               sizes="500px"
               style={{
-                width: "100%",
-                height: "auto",
+                width: '100%',
+                height: 'auto',
               }}
             />
           </div>
