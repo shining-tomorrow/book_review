@@ -6,9 +6,115 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("POSTGRES_URL")
+  extensions = [pgcrypto]
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum ReactionType {
+  LIKE
+  DISLIKE
+}
+
+model User {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email String @unique @db.VarChar(100)
+  nickName String @unique @db.VarChar(100)
+  isAdmin Boolean @default(false)
+  name String? @db.VarChar(20)
+  phone String? @db.VarChar(20)
+  birthday String? @db.Char(8)
+  password String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  token String?
+  profileImageUrl String?
+  gender Gender?
+  posts Post[]
+  comments Comment[]
+  postReactions PostReaction[]
+  commentReactions CommentReaction[]
+}
+
+model Post {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title String @db.VarChar(200)
+  views Int @default(0)
+  author User @relation(fields: [authorId], references: [id])
+  authorId String @db.Uuid
+  content String
+  thumbnail String?
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId String @db.Uuid
+  comments Comment[]
+  tags PostTag[]
+  postReactions PostReaction[]
+}
+
+model Category {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String @unique @db.VarChar(20)
+  posts Post[]
+}
+
+model Tag {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String @unique @db.VarChar(20)
+  posts PostTag[]
+}
+
+model PostTag {
+  post Post @relation(fields: [postId], references: [id])
+  postId String @db.Uuid
+  tag Tag @relation(fields: [tagId], references: [id])
+  tagId String @db.Uuid
+
+  @@id([postId, tagId])
+}
+
+model Comment {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content String
+  author User @relation(fields: [authorId], references: [id])
+  authorId String @db.Uuid
+  post Post @relation(fields: [postId], references: [id])
+  postId String @db.Uuid
+  parent Comment? @relation("CommentToComment", fields: [parentId], references: [id])
+  parentId String? @db.Uuid
+  children Comment[] @relation("CommentToComment")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  commentReactions CommentReaction[]
+}
+
+model PostReaction {
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.Uuid
+  post Post @relation(fields: [postId], references: [id])
+  postId String @db.Uuid
+  reaction ReactionType
+  
+  @@id([userId, postId])
+}
+
+model CommentReaction {
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.Uuid
+  comment Comment @relation(fields:[commentId], references: [id])
+  commentId String @db.Uuid
+  reaction ReactionType 
+
+  @@id([userId, commentId])
 }
