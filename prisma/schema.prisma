@@ -35,8 +35,8 @@ model User {
   phone String? @db.VarChar(20)
   birthday String? @db.Char(8)
   password String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
   token String?
   profileImageUrl String?
   gender Gender?
@@ -48,8 +48,8 @@ model User {
 
 model Post {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
   title String @db.VarChar(200)
   views Int @default(0)
   author User @relation(fields: [authorId], references: [id])
@@ -94,8 +94,8 @@ model Comment {
   parent Comment? @relation("CommentToComment", fields: [parentId], references: [id])
   parentId String? @db.Uuid
   children Comment[] @relation("CommentToComment")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
   commentReactions CommentReaction[]
 }
 
