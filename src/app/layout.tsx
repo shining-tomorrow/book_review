@@ -23,7 +23,7 @@ export default function RootLayout({
         <NextAuthProvider>
           <PageProvider>
             <Header />
-            {children}
+            <div className="px-8">{children}</div>
           </PageProvider>
         </NextAuthProvider>
       </body>
