@@ -24,7 +24,7 @@ export const ProfileImage = ({
         <image
           width="100%"
           height="100%"
-          clip-path="url(#maskingShape)"
+          clipPath="url(#maskingShape)"
           href={profileImageUrl}
         ></image>
       </svg>
