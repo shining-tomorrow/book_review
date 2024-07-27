@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import React from "react";
-import { fetchUserProfile } from "../lib/data";
+import { fetchExerciseRecord, fetchUserProfile } from "../lib/data";
+import BalletRecord from "../ui/upload/ballet-record";
 import { ProfileImage } from "../ui/upload/profile-image";
 
 const Page = async () => {
@@ -13,9 +14,11 @@ const Page = async () => {
     "years"
   ).years;
 
+  const records = await fetchExerciseRecord();
+
   return (
     <div className="flex justify-center">
-      <div className="w-[100%] md:w-[50%]">
+      <div className="w-[100%] md:w-[70%]">
         <div className="flex flex-row py-8">
           <ProfileImage profileImageUrl="https://p.kakaocdn.net/th/talkp/woKr823m3V/6wf5l3pA5SvFhSAjS53Zt1/rx7k78_110x110_c.jpg" />
           <div className="flex px-8 items-center text-xl">{nickName}</div>
@@ -27,6 +30,7 @@ const Page = async () => {
           </div>
           <div>{Math.ceil(balletYears)}년차</div>
         </div>
+        <BalletRecord records={records} />
       </div>
     </div>
   );
