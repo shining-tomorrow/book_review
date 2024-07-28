@@ -100,38 +100,46 @@ const BalletRecord = () => {
     });
   };
 
+  if (!state.response) {
+    return null;
+  }
+
+  /**
+   * TODO: Suspense, loading.js 추가하기
+   */
   return (
     <>
       <div className="max-w-full py-8">
         <div className="text-sm pb-2">
-          {state.response?.startDate} ~ {state.response?.endDate}
+          {state.response.startDate} ~ {state.response.endDate}
         </div>
-        {state.response?.endDate && (
-          <div className="grid grid-rows-7 grid-flow-col rounded overflow-x-auto md:gap-1 md:grid-cols-[repeat(auto-fit,minmax(0px,1fr))]">
-            {Array.from({ length: 365 }).map((_, i) => {
-              const date = state.response!.endDateTime.minus({ days: 364 - i });
+        <div className="grid grid-rows-7 grid-flow-col rounded overflow-x-auto md:gap-1 md:grid-cols-[repeat(auto-fit,minmax(0px,1fr))]">
+          {Array.from({ length: 365 }).map((_, i) => {
+            const date = state.response!.endDateTime.minus({ days: 364 - i });
 
-              let addedClass = "";
-              /**
-               * github: #0e4429, #006d32, #26a641, #39d353
-               * TODO: 포스팅 개수에 따라서 색깔 점점 더 밝아지게 하기
-               */
-              if (state.recordsMap.has(date.toFormat(DATE_FORMAT))) {
-                addedClass = "bg-[#006d32]";
-              }
+            let addedClass = "";
+            /**
+             * github: #0e4429, #006d32, #26a641, #39d353
+             * TODO: 포스팅 개수에 따라서 색깔 점점 더 밝아지게 하기
+             */
+            const hasBalletDone =
+              state.recordsMap.get(date.toFormat(DATE_FORMAT))?.balletDone ??
+              false;
+            if (hasBalletDone) {
+              addedClass = "bg-[#006d32]";
+            }
 
-              return (
-                <div
-                  key={i}
-                  className={`border-[0.5px] p-2 cursor-pointer ${
-                    addedClass || DEFAULT_BACKGROUND_COLOR_CLASS
-                  }`}
-                  onClick={(e) => handleClick(e, date)}
-                ></div>
-              );
-            })}
-          </div>
-        )}
+            return (
+              <div
+                key={i}
+                className={`border-[0.5px] p-2 cursor-pointer ${
+                  addedClass || DEFAULT_BACKGROUND_COLOR_CLASS
+                }`}
+                onClick={(e) => handleClick(e, date)}
+              ></div>
+            );
+          })}
+        </div>
       </div>
       <DailySummary record={state.record} onUpdate={fetchData} />
     </>
