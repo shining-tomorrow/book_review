@@ -16,12 +16,27 @@ export async function PUT(request: NextRequest) {
   return NextResponse.json(data);
 }
 
-export async function GET(request: NextRequest) {
+export interface BalletRecordItemForClient {
+  id: string;
+  date: string;
+  balletDone: boolean;
+  userId: string;
+}
+interface BalletRecordResponseForClient {
+  balletRecords: BalletRecordItemForClient[];
+  startDate: string;
+  endDate: string;
+}
+export async function GET(
+  request: NextRequest
+): Promise<NextResponse<BalletRecordResponseForClient | { error: string }>> {
   const date = request.nextUrl.searchParams.get("date");
 
   if (!date) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  return NextResponse.json(await fetchBalletRecord(date));
+  return NextResponse.json(
+    (await fetchBalletRecord(date)) as unknown as BalletRecordResponseForClient
+  );
 }

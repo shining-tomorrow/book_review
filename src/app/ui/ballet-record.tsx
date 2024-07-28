@@ -2,7 +2,8 @@
 
 import { DateTime } from "luxon";
 import React, { useCallback, useEffect, useState } from "react";
-import { BalletRecordItem, BalletRecordResponse } from "../lib/data";
+import { BalletRecordItemForClient } from "../api/record/route";
+import { BalletRecordResponse } from "../lib/data";
 import { getBaseUrl } from "../lib/get-base-url";
 import DailySummary from "./daily-summary";
 
@@ -21,7 +22,7 @@ export interface ExtendedRecordResponse extends BalletRecordResponse {
 
 interface TotalState {
   response: ExtendedRecordResponse | null;
-  recordsMap: Map<string, BalletRecordItem>;
+  recordsMap: Map<string, BalletRecordItemForClient>;
   record: RecordState;
 }
 
@@ -42,14 +43,19 @@ const BalletRecord = () => {
     );
     const balletRecordsResponse = await res.json();
 
-    const newMap = new Map<string, BalletRecordItem>();
+    const newMap = new Map<string, BalletRecordItemForClient>();
 
-    balletRecordsResponse.balletRecords.forEach((record: BalletRecordItem) => {
-      newMap.set(
-        DateTime.fromJSDate(record.date).startOf("day").toFormat(DATE_FORMAT),
-        record
-      );
-    });
+    /**
+     * * 서버에서 받을 때는 jsDate, 클라이언트에서 받을 때는 string
+     */
+    balletRecordsResponse.balletRecords.forEach(
+      (record: BalletRecordItemForClient) => {
+        newMap.set(
+          DateTime.fromISO(record.date).startOf("day").toFormat(DATE_FORMAT),
+          record
+        );
+      }
+    );
 
     setState((prev) => {
       const selectedDateRecord = newMap.get(
