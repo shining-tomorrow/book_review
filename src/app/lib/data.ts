@@ -15,7 +15,7 @@ export async function fetchUserProfile() {
   return user;
 }
 
-export async function fetchExerciseRecord() {
+export async function fetchBalletRecord() {
   const oneYearAgo = DateTime.local().minus({ years: 1 }).toJSDate();
 
   const records = await prisma.balletRecord.findMany({
