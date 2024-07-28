@@ -5,8 +5,8 @@ import {
   fetchBalletRecord,
   fetchUserProfile,
 } from "../lib/data";
-import BalletRecord from "../ui/upload/ballet-record";
-import { ProfileImage } from "../ui/upload/profile-image";
+import BalletRecord from "../ui/ballet-record";
+import { ProfileImage } from "../ui/profile-image";
 
 type UserProfile = {
   nickName: string | null;

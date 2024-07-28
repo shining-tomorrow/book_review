@@ -3,7 +3,7 @@
 import { Prisma } from "@prisma/client";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
-import DailySummary from "../daily-summary";
+import DailySummary from "./daily-summary";
 
 const DATE_DISPLAY_FORMAT = "yyyy.MM.dd. EEEE";
 const DEFAULT_BACKGROUND_COLOR_CLASS = "bg-[#ebedf0]";
