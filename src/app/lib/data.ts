@@ -15,17 +15,39 @@ export async function fetchUserProfile() {
   return user;
 }
 
-export async function fetchBalletRecord() {
-  const oneYearAgo = DateTime.local().minus({ years: 1 }).toJSDate();
+interface BalletRecords {
+  id: string;
+  date: Date;
+  balletDone: boolean;
+  userId: string;
+}
+[];
+
+export interface BalletRecordResponse {
+  balletRecords: BalletRecords[];
+  startDate: Date;
+  endDate: Date;
+}
+
+export async function fetchBalletRecord(): Promise<BalletRecordResponse> {
+  const oneYearAgo = DateTime.local().minus({ years: 1 });
+  const endDate = DateTime.now().toJSDate();
 
   const records = await prisma.balletRecord.findMany({
     where: {
       AND: {
         userId: testUserId,
-        date: { gt: oneYearAgo },
+        date: {
+          gt: oneYearAgo.toJSDate(),
+          lte: endDate,
+        },
       },
     },
   });
 
-  return records;
+  return {
+    balletRecords: records,
+    startDate: oneYearAgo.plus({ days: 1 }).toJSDate(),
+    endDate,
+  };
 }

@@ -1,6 +1,10 @@
 import { DateTime } from "luxon";
 import React from "react";
-import { fetchBalletRecord, fetchUserProfile } from "../lib/data";
+import {
+  BalletRecordResponse,
+  fetchBalletRecord,
+  fetchUserProfile,
+} from "../lib/data";
 import BalletRecord from "../ui/upload/ballet-record";
 import { ProfileImage } from "../ui/upload/profile-image";
 
@@ -12,13 +16,6 @@ type UserProfile = {
   balletSessionsPerWeek: number | null;
 };
 
-type BalletRecords = {
-  id: string;
-  date: Date;
-  balletDone: boolean;
-  userId: string;
-}[];
-
 const DEFAULT_PROFILE_IMAGE_URL =
   "https://p.kakaocdn.net/th/talkp/woKr823m3V/6wf5l3pA5SvFhSAjS53Zt1/rx7k78_110x110_c.jpg";
 
@@ -28,9 +25,9 @@ const DEFAULT_PROFILE_IMAGE_URL =
  */
 export const getData = async (): Promise<{
   userProfile: UserProfile;
-  balletRecords: BalletRecords;
+  balletRecordsResponse: BalletRecordResponse;
 }> => {
-  const [userProfile, balletRecords] = await Promise.all([
+  const [userProfile, balletRecordsResponse] = await Promise.all([
     fetchUserProfile(),
     fetchBalletRecord(),
   ]);
@@ -51,12 +48,15 @@ export const getData = async (): Promise<{
       balletAcademy,
       balletSessionsPerWeek,
     },
-    balletRecords,
+    balletRecordsResponse,
   };
 };
 
 const Page = async () => {
-  const { userProfile, balletRecords } = await getData();
+  const {
+    userProfile,
+    balletRecordsResponse: { balletRecords, startDate, endDate },
+  } = await getData();
   const {
     nickName,
     profileImageUrl,
@@ -84,7 +84,11 @@ const Page = async () => {
           </div>
           {balletYears > 0 && <div>{Math.ceil(balletYears)}년차</div>}
         </div>
-        <BalletRecord records={balletRecords} />
+        <BalletRecord
+          records={balletRecords}
+          startDate={startDate}
+          endDate={endDate}
+        />
       </div>
     </div>
   );
