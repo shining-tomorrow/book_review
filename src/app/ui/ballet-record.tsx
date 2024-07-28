@@ -1,7 +1,7 @@
 "use client";
 
 import { DateTime } from "luxon";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { BalletRecordItem, BalletRecordResponse } from "../lib/data";
 import { getBaseUrl } from "../lib/get-base-url";
 import DailySummary from "./daily-summary";
@@ -36,7 +36,7 @@ const BalletRecord = () => {
     },
   });
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const res = await fetch(
       `${getBaseUrl()}/api/record?date=${DateTime.now().toFormat("yyyy-MM-dd")}`
     );
@@ -51,27 +51,33 @@ const BalletRecord = () => {
       );
     });
 
-    const selectedDateRecord = newMap.get(
-      state.record.date.toFormat(DATE_FORMAT)
-    );
+    setState((prev) => {
+      const selectedDateRecord = newMap.get(
+        prev.record.date.toFormat(DATE_FORMAT)
+      );
 
-    setState({
-      response: {
-        ...balletRecordsResponse,
-        endDateTime: DateTime.fromFormat(
-          balletRecordsResponse.endDate,
-          DATE_FORMAT
-        ).startOf("day"),
-      },
-      recordsMap: newMap,
-      record: {
-        ...state.record,
-        balletDone: selectedDateRecord ? selectedDateRecord.balletDone : false,
-      },
+      return {
+        response: {
+          ...balletRecordsResponse,
+          endDateTime: DateTime.fromFormat(
+            balletRecordsResponse.endDate,
+            DATE_FORMAT
+          ).startOf("day"),
+        },
+        recordsMap: newMap,
+        record: {
+          ...prev.record,
+          balletDone: selectedDateRecord
+            ? selectedDateRecord.balletDone
+            : false,
+        },
+      };
     });
-  };
+  }, []);
 
-  fetchData();
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleClick = (e: React.MouseEvent, date: DateTime) => {
     e.stopPropagation();
