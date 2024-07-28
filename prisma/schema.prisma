@@ -144,7 +144,7 @@ model BalletPost {
 
 model BalletRecord {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  date DateTime
+  date DateTime @db.Timestamptz
   balletDone Boolean
   balletPosts BalletPostRecord[]
   user User @relation(fields: [userId], references: [id])

@@ -17,11 +17,14 @@ CREATE TABLE "User" (
     "phone" VARCHAR(20),
     "birthday" CHAR(8),
     "password" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ NOT NULL,
     "token" TEXT,
     "profileImageUrl" TEXT,
     "gender" "Gender",
+    "balletStartDate" TIMESTAMPTZ,
+    "balletAcademy" VARCHAR(25),
+    "balletSessionsPerWeek" INTEGER,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -29,8 +32,8 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Post" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ NOT NULL,
     "title" VARCHAR(200) NOT NULL,
     "views" INTEGER NOT NULL DEFAULT 0,
     "authorId" UUID NOT NULL,
@@ -72,8 +75,8 @@ CREATE TABLE "Comment" (
     "authorId" UUID NOT NULL,
     "postId" UUID NOT NULL,
     "parentId" UUID,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ NOT NULL,
 
     CONSTRAINT "Comment_pkey" PRIMARY KEY ("id")
 );
@@ -96,6 +99,37 @@ CREATE TABLE "CommentReaction" (
     CONSTRAINT "CommentReaction_pkey" PRIMARY KEY ("userId","commentId")
 );
 
+-- CreateTable
+CREATE TABLE "BalletPost" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ NOT NULL,
+    "title" VARCHAR(200) NOT NULL,
+    "views" INTEGER NOT NULL DEFAULT 0,
+    "authorId" UUID NOT NULL,
+    "content" TEXT NOT NULL,
+
+    CONSTRAINT "BalletPost_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BalletRecord" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "date" TIMESTAMPTZ NOT NULL,
+    "balletDone" BOOLEAN NOT NULL,
+    "userId" UUID NOT NULL,
+
+    CONSTRAINT "BalletRecord_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BalletPostRecord" (
+    "balletPostId" UUID NOT NULL,
+    "balletRecordId" UUID NOT NULL,
+
+    CONSTRAINT "BalletPostRecord_pkey" PRIMARY KEY ("balletPostId","balletRecordId")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -107,6 +141,9 @@ CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Tag_name_key" ON "Tag"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "BalletRecord_date_userId_key" ON "BalletRecord"("date", "userId");
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -140,3 +177,15 @@ ALTER TABLE "CommentReaction" ADD CONSTRAINT "CommentReaction_userId_fkey" FOREI
 
 -- AddForeignKey
 ALTER TABLE "CommentReaction" ADD CONSTRAINT "CommentReaction_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "Comment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BalletPost" ADD CONSTRAINT "BalletPost_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BalletRecord" ADD CONSTRAINT "BalletRecord_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BalletPostRecord" ADD CONSTRAINT "BalletPostRecord_balletPostId_fkey" FOREIGN KEY ("balletPostId") REFERENCES "BalletPost"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BalletPostRecord" ADD CONSTRAINT "BalletPostRecord_balletRecordId_fkey" FOREIGN KEY ("balletRecordId") REFERENCES "BalletRecord"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
