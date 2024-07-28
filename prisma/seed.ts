@@ -19,7 +19,6 @@ async function main() {
 
   const record = await prisma.balletRecord.upsert({
     where: {
-      id: aspyn.id,
       date_userId: { date: new Date("2024-07-25"), userId: aspyn.id },
     },
     update: {},
