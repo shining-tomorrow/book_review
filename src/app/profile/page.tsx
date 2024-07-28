@@ -1,10 +1,6 @@
 import { DateTime } from "luxon";
 import React from "react";
-import {
-  BalletRecordResponse,
-  fetchBalletRecord,
-  fetchUserProfile,
-} from "../lib/data";
+import { fetchUserProfile } from "../lib/data";
 import BalletRecord from "../ui/ballet-record";
 import { ProfileImage } from "../ui/profile-image";
 
@@ -25,20 +21,14 @@ const DEFAULT_PROFILE_IMAGE_URL =
  */
 export const getData = async (): Promise<{
   userProfile: UserProfile;
-  balletRecordsResponse: BalletRecordResponse;
 }> => {
-  const [userProfile, balletRecordsResponse] = await Promise.all([
-    fetchUserProfile(),
-    fetchBalletRecord(DateTime.now().toFormat("yyyy-MM-dd")),
-  ]);
-
   const {
     nickName = null,
     profileImageUrl = null,
     balletStartDate = null,
     balletAcademy = null,
     balletSessionsPerWeek = null,
-  } = userProfile ?? {};
+  } = (await fetchUserProfile()) ?? {};
 
   return {
     userProfile: {
@@ -48,22 +38,19 @@ export const getData = async (): Promise<{
       balletAcademy,
       balletSessionsPerWeek,
     },
-    balletRecordsResponse,
   };
 };
 
 const Page = async () => {
   const {
-    userProfile,
-    balletRecordsResponse: { balletRecords, startDate, endDate },
+    userProfile: {
+      nickName,
+      profileImageUrl,
+      balletStartDate,
+      balletAcademy,
+      balletSessionsPerWeek,
+    },
   } = await getData();
-  const {
-    nickName,
-    profileImageUrl,
-    balletStartDate,
-    balletAcademy,
-    balletSessionsPerWeek,
-  } = userProfile;
 
   // Prisma에서 가져온 날짜는 JavaScript Date 객체로 변환되어 있다
   const balletYears = balletStartDate
@@ -84,11 +71,7 @@ const Page = async () => {
           </div>
           {balletYears > 0 && <div>{Math.ceil(balletYears)}년차</div>}
         </div>
-        <BalletRecord
-          records={balletRecords}
-          startDate={startDate}
-          endDate={endDate}
-        />
+        <BalletRecord />
       </div>
     </div>
   );

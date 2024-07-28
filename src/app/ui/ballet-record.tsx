@@ -1,8 +1,9 @@
 "use client";
 
-import { Prisma } from "@prisma/client";
 import { DateTime } from "luxon";
 import React, { useState } from "react";
+import { BalletRecordItem, BalletRecordResponse } from "../lib/data";
+import { getBaseUrl } from "../lib/get-base-url";
 import DailySummary from "./daily-summary";
 
 const DEFAULT_BACKGROUND_COLOR_CLASS = "bg-[#ebedf0]";
@@ -14,49 +15,76 @@ export interface RecordState {
   isToday: boolean;
 }
 
-const BalletRecord = ({
-  records,
-  startDate,
-  endDate,
-}: {
-  records: (Prisma.BalletRecordCreateWithoutUserInput & { date: Date })[];
-  startDate: string;
-  endDate: string;
-}) => {
-  const endDateTime = DateTime.fromFormat(endDate, DATE_FORMAT).startOf("day");
-  const recordsMap = new Map<
-    string,
-    Prisma.BalletRecordCreateWithoutUserInput
-  >();
+export interface ExtendedRecordResponse extends BalletRecordResponse {
+  endDateTime: DateTime;
+}
 
-  records.forEach((record) => {
-    recordsMap.set(
-      DateTime.fromJSDate(record.date).startOf("day").toFormat(DATE_FORMAT),
-      record
+interface TotalState {
+  response: ExtendedRecordResponse | null;
+  recordsMap: Map<string, BalletRecordItem>;
+  record: RecordState;
+}
+
+const BalletRecord = () => {
+  const [state, setState] = useState<TotalState>({
+    response: null,
+    recordsMap: new Map(),
+    record: {
+      date: DateTime.now(),
+      balletDone: false,
+      isToday: true,
+    },
+  });
+
+  const fetchData = async () => {
+    const res = await fetch(
+      `${getBaseUrl()}/api/record?date=${DateTime.now().toFormat("yyyy-MM-dd")}`
     );
-  });
+    const balletRecordsResponse = await res.json();
 
-  /**
-   * TODO. 오늘 날짜의 record 값을 db에서 찾아 디폴트로 설정하기
-   */
-  const today = DateTime.now();
-  const recordOfToday = recordsMap.get(today.toFormat(DATE_FORMAT));
+    const newMap = new Map<string, BalletRecordItem>();
 
-  const [record, setRecord] = useState<RecordState>({
-    date: today,
-    balletDone: recordOfToday ? recordOfToday.balletDone : false,
-    isToday: true,
-  });
+    balletRecordsResponse.balletRecords.forEach((record: BalletRecordItem) => {
+      newMap.set(
+        DateTime.fromJSDate(record.date).startOf("day").toFormat(DATE_FORMAT),
+        record
+      );
+    });
+
+    const selectedDateRecord = newMap.get(
+      state.record.date.toFormat(DATE_FORMAT)
+    );
+
+    setState({
+      response: {
+        ...balletRecordsResponse,
+        endDateTime: DateTime.fromFormat(
+          balletRecordsResponse.endDate,
+          DATE_FORMAT
+        ).startOf("day"),
+      },
+      recordsMap: newMap,
+      record: {
+        ...state.record,
+        balletDone: selectedDateRecord ? selectedDateRecord.balletDone : false,
+      },
+    });
+  };
+
+  fetchData();
 
   const handleClick = (e: React.MouseEvent, date: DateTime) => {
     e.stopPropagation();
 
-    const target = recordsMap.get(date.toFormat(DATE_FORMAT));
+    const target = state.recordsMap.get(date.toFormat(DATE_FORMAT));
 
-    setRecord({
-      date,
-      balletDone: target ? target.balletDone : false,
-      isToday: DateTime.now().hasSame(date, "day"),
+    setState({
+      ...state,
+      record: {
+        date,
+        balletDone: target ? target.balletDone : false,
+        isToday: DateTime.now().hasSame(date, "day"),
+      },
     });
   };
 
@@ -64,34 +92,36 @@ const BalletRecord = ({
     <>
       <div className="max-w-full py-8">
         <div className="text-sm pb-2">
-          {startDate} ~ {endDate}
+          {state.response?.startDate} ~ {state.response?.endDate}
         </div>
-        <div className="grid grid-rows-7 grid-flow-col rounded overflow-x-auto md:gap-1 md:grid-cols-[repeat(auto-fit,minmax(0px,1fr))]">
-          {Array.from({ length: 365 }).map((_, i) => {
-            const date = endDateTime.minus({ days: 364 - i });
+        {state.response?.endDate && (
+          <div className="grid grid-rows-7 grid-flow-col rounded overflow-x-auto md:gap-1 md:grid-cols-[repeat(auto-fit,minmax(0px,1fr))]">
+            {Array.from({ length: 365 }).map((_, i) => {
+              const date = state.response!.endDateTime.minus({ days: 364 - i });
 
-            let addedClass = "";
-            /**
-             * github: #0e4429, #006d32, #26a641, #39d353
-             * TODO: 포스팅 개수에 따라서 색깔 점점 더 밝아지게 하기
-             */
-            if (recordsMap.has(date.toFormat(DATE_FORMAT))) {
-              addedClass = "bg-[#006d32]";
-            }
+              let addedClass = "";
+              /**
+               * github: #0e4429, #006d32, #26a641, #39d353
+               * TODO: 포스팅 개수에 따라서 색깔 점점 더 밝아지게 하기
+               */
+              if (state.recordsMap.has(date.toFormat(DATE_FORMAT))) {
+                addedClass = "bg-[#006d32]";
+              }
 
-            return (
-              <div
-                key={i}
-                className={`border-[0.5px] p-2 cursor-pointer ${
-                  addedClass || DEFAULT_BACKGROUND_COLOR_CLASS
-                }`}
-                onClick={(e) => handleClick(e, date)}
-              ></div>
-            );
-          })}
-        </div>
+              return (
+                <div
+                  key={i}
+                  className={`border-[0.5px] p-2 cursor-pointer ${
+                    addedClass || DEFAULT_BACKGROUND_COLOR_CLASS
+                  }`}
+                  onClick={(e) => handleClick(e, date)}
+                ></div>
+              );
+            })}
+          </div>
+        )}
       </div>
-      <DailySummary record={record} />
+      <DailySummary record={state.record} />
     </>
   );
 };

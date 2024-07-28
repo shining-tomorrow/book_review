@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { updateBalletDone } from "../../lib/data";
+import { fetchBalletRecord, updateBalletDone } from "../../lib/data";
 
 export async function PUT(request: NextRequest) {
   const { date, balletDone } = await request.json();
@@ -14,4 +14,14 @@ export async function PUT(request: NextRequest) {
   const data = await updateBalletDone(date, balletDone);
 
   return NextResponse.json(data);
+}
+
+export async function GET(request: NextRequest) {
+  const date = request.nextUrl.searchParams.get("date");
+
+  if (!date) {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
+
+  return NextResponse.json(await fetchBalletRecord(date));
 }

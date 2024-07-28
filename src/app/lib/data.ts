@@ -15,16 +15,15 @@ export async function fetchUserProfile() {
   return user;
 }
 
-interface BalletRecords {
+export interface BalletRecordItem {
   id: string;
   date: Date;
   balletDone: boolean;
   userId: string;
 }
-[];
 
 export interface BalletRecordResponse {
-  balletRecords: BalletRecords[];
+  balletRecords: BalletRecordItem[];
   startDate: string;
   endDate: string;
 }
