@@ -72,7 +72,7 @@ const Page = async () => {
 
   return (
     <div className="flex justify-center">
-      <div className="w-[100%] md:w-[70%]">
+      <div className="w-[100%] md:w-[75%]">
         <div className="flex flex-row py-8">
           <ProfileImage profileImageUrl={profileImageUrl} />
           <div className="flex px-8 items-center text-xl">{nickName}</div>

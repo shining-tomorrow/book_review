@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import DailySummary from "../daily-summary";
 
 const DATE_DISPLAY_FORMAT = "yyyy.MM.dd. EEEE";
+const DEFAULT_BACKGROUND_COLOR_CLASS = "bg-[#ebedf0]";
 
 const BalletRecord = ({
   records,
@@ -42,7 +43,7 @@ const BalletRecord = ({
 
   return (
     <>
-      <div className="max-w-full grid grid-rows-7 grid-flow-col overflow:scroll md:gap-2 py-8 md:grid-cols-[repeat(auto-fit,minmax(0px,1fr))]">
+      <div className="max-w-full grid grid-rows-7 grid-flow-col rounded overflow-x-auto md:gap-1 py-8 md:grid-cols-[repeat(auto-fit,minmax(0px,1fr))]">
         {Array.from({ length: 365 }).map((_, i) => {
           const date = DateTime.now()
             .minus({ days: 365 - i })
@@ -61,7 +62,9 @@ const BalletRecord = ({
           return (
             <div
               key={i}
-              className={`border-[0.5px] p-2 cursor-pointer ${addedClass}`}
+              className={`border-[0.5px] p-2 cursor-pointer ${
+                addedClass || DEFAULT_BACKGROUND_COLOR_CLASS
+              }`}
               onClick={() => handleClick(date)}
             ></div>
           );
