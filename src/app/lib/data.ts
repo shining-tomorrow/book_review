@@ -30,8 +30,8 @@ export interface BalletRecordResponse {
 }
 
 export async function fetchBalletRecord(): Promise<BalletRecordResponse> {
-  const oneYearAgo = DateTime.local().minus({ years: 1 });
-  const endDate = DateTime.now().toJSDate();
+  const oneYearAgo = DateTime.now().startOf("day").minus({ years: 1 });
+  const endDate = DateTime.now().endOf("day").toJSDate();
 
   const records = await prisma.balletRecord.findMany({
     where: {
