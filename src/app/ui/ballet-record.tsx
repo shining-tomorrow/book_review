@@ -8,6 +8,12 @@ import DailySummary from "./daily-summary";
 const DATE_DISPLAY_FORMAT = "yyyy.MM.dd. EEEE";
 const DEFAULT_BACKGROUND_COLOR_CLASS = "bg-[#ebedf0]";
 
+export interface RecordState {
+  date: string;
+  balletDone: boolean;
+  isToday: boolean;
+}
+
 const BalletRecord = ({
   records,
   startDate,
@@ -29,19 +35,21 @@ const BalletRecord = ({
   /**
    * TODO. 오늘 날짜의 record 값을 db에서 찾아 디폴트로 설정하기
    */
-  const [record, setRecord] = useState<
-    Prisma.BalletRecordCreateWithoutUserInput & { date: string }
-  >({
+  const [record, setRecord] = useState<RecordState>({
     date: DateTime.now().toFormat(DATE_DISPLAY_FORMAT),
     balletDone: false,
+    isToday: true,
   });
 
-  const handleClick = (date: string) => {
+  const handleClick = (e: React.MouseEvent, date: string) => {
+    e.stopPropagation();
+
     const target = recordsMap.get(date);
 
     setRecord({
       date,
       balletDone: target ? target.balletDone : false,
+      isToday: date === DateTime.now().toFormat(DATE_DISPLAY_FORMAT),
     });
   };
 
@@ -74,7 +82,7 @@ const BalletRecord = ({
                 className={`border-[0.5px] p-2 cursor-pointer ${
                   addedClass || DEFAULT_BACKGROUND_COLOR_CLASS
                 }`}
-                onClick={() => handleClick(date)}
+                onClick={(e) => handleClick(e, date)}
               ></div>
             );
           })}

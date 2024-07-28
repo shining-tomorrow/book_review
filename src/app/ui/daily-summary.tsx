@@ -1,18 +1,17 @@
-import { Prisma } from "@prisma/client";
 import React from "react";
+import { RecordState } from "./ballet-record";
+import TodayBalletButton from "./today-ballet-button";
 
-const DailySummary = ({
-  record,
-}: {
-  record: Prisma.BalletRecordCreateWithoutUserInput & { date: string };
-}) => {
+const DailySummary = ({ record }: { record: RecordState }) => {
   return (
     <div>
       <div>{record.date}</div>
-      {record.balletDone ? (
-        <span>오늘 발레 완료 🩰</span>
+      {record.isToday ? (
+        <TodayBalletButton balletDone={record.balletDone} />
+      ) : record.balletDone ? (
+        <span>발레 완료 🩰</span>
       ) : (
-        <span>오늘은 쉬었어요 😴</span>
+        <span>쉬었어요 😴</span>
       )}
     </div>
   );
