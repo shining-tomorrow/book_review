@@ -29,7 +29,7 @@ export const getData = async (): Promise<{
 }> => {
   const [userProfile, balletRecordsResponse] = await Promise.all([
     fetchUserProfile(),
-    fetchBalletRecord(),
+    fetchBalletRecord(DateTime.now().toFormat("yyyy-MM-dd")),
   ]);
 
   const {

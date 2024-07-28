@@ -2,10 +2,12 @@ import React from "react";
 import { RecordState } from "./ballet-record";
 import TodayBalletButton from "./today-ballet-button";
 
+const DATE_DISPLAY_FORMAT = "yyyy.MM.dd. EEEE";
+
 const DailySummary = ({ record }: { record: RecordState }) => {
   return (
     <div>
-      <div>{record.date}</div>
+      <div>{record.date.toFormat(DATE_DISPLAY_FORMAT)}</div>
       {record.isToday ? (
         <TodayBalletButton balletDone={record.balletDone} />
       ) : record.balletDone ? (
