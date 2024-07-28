@@ -1,6 +1,6 @@
 import React from "react";
+import BalletDayCheck from "./ballet-day-check";
 import { RecordState } from "./ballet-record";
-import TodayBalletButton from "./today-ballet-button";
 
 const DATE_DISPLAY_FORMAT = "yyyy.MM.dd. EEEE";
 
@@ -14,13 +14,7 @@ const DailySummary = ({
   return (
     <div>
       <div>{record.date.toFormat(DATE_DISPLAY_FORMAT)}</div>
-      {record.isToday ? (
-        <TodayBalletButton balletDone={record.balletDone} onUpdate={onUpdate} />
-      ) : record.balletDone ? (
-        <span>발레 완료 🩰</span>
-      ) : (
-        <span>쉬었어요 😴</span>
-      )}
+      <BalletDayCheck record={record} onUpdate={onUpdate} />
     </div>
   );
 };

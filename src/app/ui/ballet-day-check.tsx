@@ -6,40 +6,56 @@ import Lottie, {
   AnimationItem,
   RendererType,
 } from "lottie-web";
-import { DateTime } from "luxon";
 import React, { useRef, useState } from "react";
-import { DATE_FORMAT } from "./ballet-record";
+import { DATE_FORMAT, RecordState } from "./ballet-record";
 
-const TodayBalletButton = ({
-  balletDone,
+const BalletDayCheck = ({
+  record,
   onUpdate,
 }: {
-  balletDone: boolean;
+  record: RecordState;
   onUpdate: Function;
 }) => {
+  const prefix = record.isToday ? "오늘 " : "";
+
   const [lottieAnimationInstance, setLottieAnimationInstance] =
     useState<AnimationItem | null>(null);
   const confettieContainer = useRef(null);
 
   const className = "p-2 bg-red-100 rounded-md text-gray-500 fond-bold text-lg";
 
-  const handleClickComplete = async () => {
-    if (lottieAnimationInstance || !confettieContainer.current) {
-      return;
-    }
-
+  const toggleBalletDone = async () => {
     const result = await fetch(`/api/record`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        date: DateTime.now().toFormat(DATE_FORMAT),
-        balletDone: true,
+        date: record.date.toFormat(DATE_FORMAT),
+        balletDone: !record.balletDone,
       }),
     });
 
     onUpdate();
+  };
+
+  const handleClick = async () => {
+    toggleBalletDone();
+
+    if (record.balletDone) {
+      return;
+    }
+
+    if (!confettieContainer.current) {
+      return;
+    }
+
+    if (lottieAnimationInstance) {
+      if (lottieAnimationInstance.isPaused) {
+        lottieAnimationInstance.goToAndPlay(0, false);
+      }
+      return;
+    }
 
     const options: AnimationConfigWithData<RendererType> = {
       loop: 2,
@@ -54,29 +70,13 @@ const TodayBalletButton = ({
     setLottieAnimationInstance(lottieAnimation);
   };
 
-  const handleClickCancel = async () => {
-    const result = await fetch(`/api/record`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        date: DateTime.now().toFormat(DATE_FORMAT),
-        balletDone: false,
-      }),
-    });
-
-    onUpdate();
-  };
-
   return (
     <div className="my-3">
-      {!balletDone && (
-        <button className={className + " w-full"} onClick={handleClickComplete}>
-          오늘 발레했나요? 🩰
+      {record.isToday && !record.balletDone ? (
+        <button className={className + " w-full"} onClick={handleClick}>
+          {prefix}발레했나요? 🩰
         </button>
-      )}
-      {balletDone && (
+      ) : (
         <div className="flex items-center justify-center">
           <div
             className={
@@ -84,13 +84,19 @@ const TodayBalletButton = ({
               " flex items-center justify-center h-[50px] text-center w-[50%] min-w-fit"
             }
           >
-            오늘 발레 완료 🥳
+            {record.balletDone ? (
+              <>
+                {prefix}발레 완료 {record.isToday ? "🥳" : "🩰"}
+              </>
+            ) : (
+              <>쉬었어요 😴</>
+            )}
           </div>
           <button
             className="flex items-center justify-center h-[50px] ml-2 rounded border border-slate-400 w-[50px]"
-            onClick={handleClickCancel}
+            onClick={handleClick}
           >
-            취소
+            수정
           </button>
         </div>
       )}
@@ -104,4 +110,4 @@ const TodayBalletButton = ({
   );
 };
 
-export default TodayBalletButton;
+export default BalletDayCheck;
