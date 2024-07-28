@@ -133,7 +133,7 @@ const BalletRecord = () => {
           </div>
         )}
       </div>
-      <DailySummary record={state.record} />
+      <DailySummary record={state.record} onUpdate={fetchData} />
     </>
   );
 };

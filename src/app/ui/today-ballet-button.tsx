@@ -10,7 +10,13 @@ import { DateTime } from "luxon";
 import React, { useRef, useState } from "react";
 import { DATE_FORMAT } from "./ballet-record";
 
-const TodayBalletButton = ({ balletDone }: { balletDone: boolean }) => {
+const TodayBalletButton = ({
+  balletDone,
+  onUpdate,
+}: {
+  balletDone: boolean;
+  onUpdate: Function;
+}) => {
   const [lottieAnimationInstance, setLottieAnimationInstance] =
     useState<AnimationItem | null>(null);
   const confettieContainer = useRef(null);
@@ -32,6 +38,8 @@ const TodayBalletButton = ({ balletDone }: { balletDone: boolean }) => {
         balletDone: true,
       }),
     });
+
+    onUpdate();
 
     const options: AnimationConfigWithData<RendererType> = {
       loop: 2,
@@ -57,6 +65,8 @@ const TodayBalletButton = ({ balletDone }: { balletDone: boolean }) => {
         balletDone: false,
       }),
     });
+
+    onUpdate();
   };
 
   return (
