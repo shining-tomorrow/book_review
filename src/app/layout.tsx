@@ -1,8 +1,10 @@
 import BottomNavBar from '@/app/ui/layout/BottomNavBar';
 import {NextAuthProvider} from '@/providers/NextAuthProvider';
+import {PageProvider} from '@/providers/PageProvider';
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
 import './globals.css';
+import Header from './ui/header';
 
 const inter = Inter({subsets: ['latin']});
 
@@ -18,10 +20,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} pb-[70px]`}>
+      <body className={inter.className}>
         <NextAuthProvider>
-          {children}
-          <BottomNavBar />
+          <PageProvider>
+            <Header />
+            <div className="px-8">{children}</div>
+            <BottomNavBar />
+          </PageProvider>
         </NextAuthProvider>
       </body>
     </html>

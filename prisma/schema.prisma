@@ -26,6 +26,7 @@ enum ReactionType {
   DISLIKE
 }
 
+// balletStartDate: 발레 시작 날짜, 발레 N년차 확인 용도
 model User {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email String @unique @db.VarChar(100)
@@ -40,11 +41,18 @@ model User {
   token String?
   profileImageUrl String?
   gender Gender?
+  balletStartDate DateTime? @db.Timestamptz
+  balletAcademy String? @db.VarChar(25)
+  balletSessionsPerWeek Int?
   posts Post[]
   comments Comment[]
   postReactions PostReaction[]
   commentReactions CommentReaction[]
+  balletPosts BalletPost[]
+  balletRecord BalletRecord[]
 }
+
+// 게시판
 
 model Post {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -118,3 +126,40 @@ model CommentReaction {
 
   @@id([userId, commentId])
 }
+
+// 발레 포스팅
+// 일단 대강 넣고 추후 수정 예정(인스타 포맷 생각 중!)
+
+model BalletPost {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+  title String @db.VarChar(200)
+  views Int @default(0)
+  author User @relation(fields: [authorId], references: [id])
+  authorId String @db.Uuid
+  content String
+  balletRecords BalletPostRecord[]
+}
+
+model BalletRecord {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  date DateTime @db.Timestamptz
+  balletDone Boolean
+  balletPosts BalletPostRecord[]
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.Uuid
+
+  @@unique([date, userId])
+}
+
+model BalletPostRecord {
+  balletPost BalletPost @relation(fields: [balletPostId], references: [id])
+  balletPostId String @db.Uuid
+  balletRecord BalletRecord @relation(fields: [balletRecordId], references: [id])
+  balletRecordId String @db.Uuid
+
+  @@id([balletPostId, balletRecordId]) 
+}
+
+// 학원 히스토리 추가 예정
