@@ -4,7 +4,6 @@ import { DateTime } from "luxon";
 import React, { useEffect, useState } from "react";
 import { BalletRecordItemForClient } from "../api/record/route";
 import { BalletRecordResponse } from "../lib/data";
-import { getBaseUrl } from "../lib/get-base-url";
 import DailySummary from "./daily-summary";
 
 const DEFAULT_BACKGROUND_COLOR_CLASS = "bg-[#ebedf0]";
@@ -39,7 +38,7 @@ const BalletRecord = () => {
 
   const fetchData = async () => {
     const res = await fetch(
-      `${getBaseUrl()}/api/record?date=${DateTime.now().toFormat("yyyy-MM-dd")}`
+      `/api/record?date=${DateTime.now().toFormat("yyyy-MM-dd")}`
     );
     const balletRecordsResponse = await res.json();
 
