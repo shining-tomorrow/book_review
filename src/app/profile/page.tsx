@@ -1,6 +1,6 @@
 import {DateTime} from 'luxon';
 import React from 'react';
-import {fetchUserProfile} from '../lib/data';
+import {fetchUserProfile} from '../../db/data';
 import BalletRecord from '../ui/ballet-record';
 import {ProfileImage} from '../ui/profile-image';
 
