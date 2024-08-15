@@ -1,8 +1,6 @@
 import {DateTime} from 'luxon';
 import {prisma} from './client';
 
-const testUserId = '6d2d8de0-693c-4860-a4e7-e71af5db0ae4';
-
 export interface BalletRecordItem {
   id: string;
   date: Date;
@@ -27,7 +25,7 @@ export async function fetchBalletRecord(endDateString: string): Promise<BalletRe
   const records = await prisma.balletRecord.findMany({
     where: {
       AND: {
-        userId: testUserId,
+        userId: process.env.TEST_USER_ID,
         date: {
           gt: oneYearAgo.toJSDate(),
           lte: endDate,
@@ -48,7 +46,7 @@ export async function updateBalletDone(date: string, balletDone: boolean) {
     where: {
       date_userId: {
         date: new Date(date),
-        userId: testUserId,
+        userId: process.env.TEST_USER_ID ?? '',
       },
     },
     update: {
@@ -57,7 +55,7 @@ export async function updateBalletDone(date: string, balletDone: boolean) {
     create: {
       date: new Date(date),
       balletDone,
-      userId: testUserId,
+      userId: process.env.TEST_USER_ID ?? '',
     },
   });
 
