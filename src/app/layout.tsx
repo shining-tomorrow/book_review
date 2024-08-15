@@ -1,10 +1,10 @@
-import BottomNavBar from '@/app/ui/layout/BottomNavBar';
 import {NextAuthProvider} from '@/providers/NextAuthProvider';
 import {PageProvider} from '@/providers/PageProvider';
+import '@/styles/globals.css';
+import BottomNavBar from '@/ui/layout/BottomNavBar';
+import Header from '@/ui/layout/header';
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
-import './globals.css';
-import Header from './ui/header';
 
 const inter = Inter({subsets: ['latin']});
 

@@ -1,7 +1,5 @@
-import {PrismaClient} from '@prisma/client';
 import {DateTime} from 'luxon';
-
-const prisma = new PrismaClient();
+import {prisma} from './client';
 
 const testUserId = '6d2d8de0-693c-4860-a4e7-e71af5db0ae4';
 

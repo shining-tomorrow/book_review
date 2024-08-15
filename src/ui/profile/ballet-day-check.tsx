@@ -1,8 +1,7 @@
 'use client';
-
-import confettieLottie from '@/app/public/confetti.json';
 import Lottie, {AnimationConfigWithData, AnimationItem, RendererType} from 'lottie-web';
-import React, {useRef, useState} from 'react';
+import {useRef, useState} from 'react';
+import confettieLottie from '../../../public/confetti.json';
 import {DATE_FORMAT, RecordState} from './ballet-record';
 
 const BalletDayCheck = ({record, onUpdate}: {record: RecordState; onUpdate: Function}) => {

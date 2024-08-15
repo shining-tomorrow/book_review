@@ -1,8 +1,7 @@
+import {fetchUserProfile} from '@/db/user';
+import BalletRecord from '@/ui/profile/ballet-record';
+import {ProfileImage} from '@/ui/profile/profile-image';
 import {DateTime} from 'luxon';
-import React from 'react';
-import {fetchUserProfile} from '../../db/data';
-import BalletRecord from '../ui/ballet-record';
-import {ProfileImage} from '../ui/profile-image';
 
 type UserProfile = {
   nickName: string | null;
