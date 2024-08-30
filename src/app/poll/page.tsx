@@ -14,7 +14,7 @@ interface PollItem {
   hasVoted: boolean; // 유저가 투표에 참여했는지
   image: string | null; // 투표 만들 때 이미지 등록 안 했으면 디폴트 이미지 노출
 }
-const mockPollList = Array.from({length: 10}, (_, i) => ({
+const mockPollList: PollItem[] = Array.from({length: 10}, (_, i) => ({
   id: i,
   title:
     i % 2
