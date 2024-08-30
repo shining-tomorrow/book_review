@@ -1,23 +1,38 @@
-"use client";
+'use client';
 
-import { useHeaderContext } from "@/providers/PageProvider";
-import Link from "next/link";
-import React from "react";
+import {useHeaderContext} from '@/providers/PageProvider';
+import Image from 'next/image';
+import Link from 'next/link';
+import logoImage from '../../../public/logo.png';
 
 const Header = () => {
-  let { title } = useHeaderContext();
+  let {title} = useHeaderContext();
 
   return (
-    <header className="h-[40px] md:h-[80px] border-b border-gray-300 flex justify-center items-center">
-      <h1 className="text-2xl md:text-4xl font-bold">{title}</h1>
-      <nav className="hidden md:block absolute right-[18px]">
-        <Link href="/" className="px-4">
-          Home
-        </Link>
-        <Link href="/profile" className="px-4">
-          Profile
-        </Link>
-      </nav>
+    <header className="h-[48px] md:h-[56px]">
+      <div className="relative h-full mx-8 border-b border-[#9AA0B0] flex items-center">
+        <Image
+          src={logoImage}
+          alt="사이트 로고"
+          width={0}
+          height={0}
+          style={{
+            width: 'auto',
+            height: '100%',
+          }}
+        />
+        <nav className="hidden md:block absolute right-[18px]">
+          <Link href="/" className="px-4">
+            Home
+          </Link>
+          <Link href="/profile" className="px-4">
+            Profile
+          </Link>
+          <Link href="/poll" className="px-4">
+            Poll
+          </Link>
+        </nav>
+      </div>
     </header>
   );
 };
