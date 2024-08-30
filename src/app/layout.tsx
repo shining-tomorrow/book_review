@@ -2,7 +2,7 @@ import {NextAuthProvider} from '@/providers/NextAuthProvider';
 import {PageProvider} from '@/providers/PageProvider';
 import '@/styles/globals.css';
 import BottomNavBar from '@/ui/layout/BottomNavBar';
-import Header from '@/ui/layout/Header';
+import Header from '@/ui/layout/header';
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
 import {NavBarHeight} from '../../const';
@@ -19,16 +19,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const paddingBottomClassName = 'pb-[' + NavBarHeight + 'px]';
-
   return (
     <html lang="en">
       <body className={inter.className}>
         <NextAuthProvider>
           <PageProvider>
             <Header />
-            {/* height 계산: 100vh - (header+bottomNavBar) */}
-            <div className={`px-8 min-h-[calc(100vh-108px)] md:min-h-[calc(100vh-116px)] ${paddingBottomClassName}`}>
+            {/* padding-top은 header 높이 */}
+            <div
+              style={{
+                paddingBottom: NavBarHeight + 'px',
+                minHeight: 'calc(100% - NavBarHeight)',
+              }}
+              className="px-8 pt-[48px] md:pt-[56px]"
+            >
               {children}
             </div>
             <BottomNavBar />
