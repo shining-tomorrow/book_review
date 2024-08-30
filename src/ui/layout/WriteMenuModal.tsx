@@ -2,16 +2,17 @@
 
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {createPortal} from 'react-dom';
+import {NavBarHeight} from '../../../const';
 
 /**
  * ?isWriteMenuOpen=true 일 때 보임
  */
-const WriteMenuModal = ({navBarHeight}: {navBarHeight: number}) => {
+const WriteMenuModal = () => {
   const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   const isWriteMenuOpen = params.get('isWriteMenuOpen') === 'true';
-  const bottomPosition = navBarHeight + 4;
+  const bottomPosition = NavBarHeight + 4;
 
   if (!isWriteMenuOpen) {
     return null;

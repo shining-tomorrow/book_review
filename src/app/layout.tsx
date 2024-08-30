@@ -5,6 +5,7 @@ import BottomNavBar from '@/ui/layout/BottomNavBar';
 import Header from '@/ui/layout/Header';
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
+import {NavBarHeight} from '../../const';
 
 const inter = Inter({subsets: ['latin']});
 
@@ -18,13 +19,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const paddingBottomClassName = 'pb-[' + NavBarHeight + 'px]';
+
   return (
     <html lang="en">
       <body className={inter.className}>
         <NextAuthProvider>
           <PageProvider>
             <Header />
-            <div className="px-8">{children}</div>
+            {/* height 계산: 100vh - (header+bottomNavBar) */}
+            <div className={`px-8 min-h-[calc(100vh-108px)] md:min-h-[calc(100vh-116px)] ${paddingBottomClassName}`}>
+              {children}
+            </div>
             <BottomNavBar />
           </PageProvider>
         </NextAuthProvider>

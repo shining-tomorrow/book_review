@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import {useEffect, useRef, useState} from 'react';
+import {NavBarHeight} from '../../../const';
 import WriteMenuModal from './WriteMenuModal';
 
 const navItems = [
@@ -48,21 +48,13 @@ const navItems = [
 
 export default function BottomNavBar() {
   const pathname = usePathname();
-  const host = useRef<HTMLElement | null>(null);
-  const [navBarHeight, setNavBarHeight] = useState(0);
-
-  useEffect(() => {
-    if (host.current) {
-      setNavBarHeight(host.current.getBoundingClientRect().height);
-    }
-  }, []);
 
   return (
-    <nav ref={host} className="fixed bottom-0 w-full">
+    <nav className={`fixed bottom-0 w-full h-[${NavBarHeight}px]`}>
       <div className="flex justify-between border-t-[1px] bg-[#fafafa] border-lineColor text-[#637588]">
         {navItems.map(({Icon, label, url, isMenuOpenOnClick}) => (
           <div key={label} className="flex-1">
-            {isMenuOpenOnClick && <WriteMenuModal navBarHeight={navBarHeight} />}
+            {isMenuOpenOnClick && <WriteMenuModal />}
             <Link
               className="py-2 flex flex-col items-center justify-end"
               href={{pathname: url.pathname ?? pathname, query: url.query ?? {}}}
