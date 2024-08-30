@@ -10,7 +10,7 @@ const Header = () => {
 
   return (
     <header className="h-[48px] md:h-[56px]">
-      <div className="relative h-full mx-8 border-b border-[#9AA0B0] flex items-center">
+      <div className="relative h-full mx-8 mt-[8px] border-b border-lineColor flex items-center">
         <Image
           src={logoImage}
           alt="사이트 로고"

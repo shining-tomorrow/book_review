@@ -59,7 +59,7 @@ export default function BottomNavBar() {
 
   return (
     <nav ref={host} className="fixed bottom-0 w-full">
-      <div className="flex justify-between bg-white border-t-[1px] border-gray-100 text-[#637588]">
+      <div className="flex justify-between border-t-[1px] bg-[#fafafa] border-lineColor text-[#637588]">
         {navItems.map(({Icon, label, url, isMenuOpenOnClick}) => (
           <div key={label} className="flex-1">
             {isMenuOpenOnClick && <WriteMenuModal navBarHeight={navBarHeight} />}
