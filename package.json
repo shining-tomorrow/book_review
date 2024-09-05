@@ -12,7 +12,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@prisma/client": "^5.17.0",
+    "@prisma/client": "^5.18.0",
     "@vercel/blob": "^0.23.4",
     "@vercel/postgres": "^0.9.0",
     "lottie-web": "^5.12.2",
@@ -34,7 +34,7 @@
     "postcss": "^8.4.39",
     "prettier": "^3.3.3",
     "prettier-plugin-organize-imports": "^4.0.0",
-    "prisma": "^5.17.0",
+    "prisma": "^5.18.0",
     "tailwindcss": "^3.4.6",
     "tsx": "^4.16.2",
     "typescript": "^5"
