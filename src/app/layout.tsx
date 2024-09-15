@@ -3,9 +3,10 @@ import {PageProvider} from '@/providers/PageProvider';
 import '@/styles/globals.css';
 import BottomNavBar from '@/ui/layout/BottomNavBar';
 import Header from '@/ui/layout/header';
+import clsx from 'clsx';
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
-import {NavBarHeight} from '../../const';
+import {DesktopHeaderHeight, MobileHeaderHeight, NavBarHeight} from '../../const';
 
 const inter = Inter({subsets: ['latin']});
 
@@ -25,13 +26,13 @@ export default function RootLayout({
         <NextAuthProvider>
           <PageProvider>
             <Header />
-            {/* padding-top은 header 높이 */}
             <div
-              style={{
-                paddingBottom: NavBarHeight + 'px',
-                minHeight: 'calc(100% - NavBarHeight)',
-              }}
-              className="px-8 pt-[48px] md:pt-[56px]"
+              style={{paddingBottom: NavBarHeight + 'px'}}
+              className={clsx(
+                'px-8 h-screen overflow-auto',
+                `pt-[${MobileHeaderHeight}px]`,
+                `md:pt-[${DesktopHeaderHeight}px]`,
+              )}
             >
               {children}
             </div>

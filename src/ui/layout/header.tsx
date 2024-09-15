@@ -1,10 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import {DesktopHeaderHeight, MobileHeaderHeight} from '../../../const';
 import logoImage from '../../../public/logo.png';
+
+const HeightClass = `h-[${MobileHeaderHeight}px] md:h-[${DesktopHeaderHeight}px]`;
 
 const Header = () => {
   return (
-    <header className="fixed w-full h-[48px] md:h-[56px] bg-[#f5f5f5]">
+    <header className={'fixed w-full bg-[#f5f5f5]' + HeightClass}>
       <div className="w-[clac(100%-32px)] h-[calc(100%-8px)] mx-[16px] mt-[8px] border-b border-lineColor flex items-center">
         <Image
           src={logoImage}
