@@ -7,20 +7,24 @@ import {MdHowToVote} from 'react-icons/md';
 import {NavBarHeight} from '../../../const';
 import pollImage from '../../../public/polling.png';
 
-interface PollItem {
-  id: number;
+/**
+ * TODO. db 구성하면 인터페이스 위치 바뀔 예정
+ */
+export interface PollItem {
+  id: string;
   title: string;
-  voteCount: number; // 몇 명이 투표에 참여했는지
+  participantCount: number; // 몇 명이 투표에 참여했는지
   hasVoted: boolean; // 유저가 투표에 참여했는지
   image: string | null; // 투표 만들 때 이미지 등록 안 했으면 디폴트 이미지 노출
 }
+
 const mockPollList: PollItem[] = Array.from({length: 10}, (_, i) => ({
-  id: i,
+  id: String(i),
   title:
     i % 2
-      ? '최애 슈즈 투표'
+      ? '최애 발레 슈즈 투표'
       : '여러분의 최애 발레 슈즈를 투표해주세요. 길게길게testesteststestetstsettetestestesteststestetstsettetes',
-  voteCount: 3,
+  participantCount: 3,
   hasVoted: Boolean(i % 2),
   image:
     i % 2
@@ -40,7 +44,7 @@ const page = () => {
       </div>
       {/* 설문 조사 리스트 */}
       <div className="flex flex-col">
-        {mockPollList.map(({id, title, voteCount, hasVoted, image}) => (
+        {mockPollList.map(({id, title, participantCount, hasVoted, image}) => (
           <Link href={'/poll/' + id} className="border-[1px] border-gray-200 p-4 mt-4 rounded-[8px]" key={id}>
             <div className="flex flex-row w-full items-center">
               <div className="w-[60px] h-[60px] overflow-hidden flex justify-center items-center rounded-full bg-[#e6e7e9]">
@@ -57,7 +61,7 @@ const page = () => {
                 <div className="flex flex-row text-[#4e7397] text-sm font-normal leading-normal">
                   <div className="flex flex-row">
                     <IoPeopleOutline size="20" className="mr-[4px]" />
-                    {voteCount}명 참여
+                    {participantCount}명 참여
                   </div>
                   {hasVoted && (
                     <>
