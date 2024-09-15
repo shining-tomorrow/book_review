@@ -1,6 +1,6 @@
 'use client';
 
-import {usePathname, useRouter, useSearchParams} from 'next/navigation';
+import {usePathname, useRouter} from 'next/navigation';
 import {createPortal} from 'react-dom';
 import {NavBarHeight} from '../../../const';
 
@@ -8,15 +8,9 @@ import {NavBarHeight} from '../../../const';
  * ?isWriteMenuOpen=true 일 때 보임
  */
 const WriteMenuModal = () => {
-  const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const isWriteMenuOpen = params.get('isWriteMenuOpen') === 'true';
   const bottomPosition = NavBarHeight + 4;
-
-  if (!isWriteMenuOpen) {
-    return null;
-  }
 
   const handleClickOutside = () => {
     router.push(pathname);
