@@ -1,9 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import {usePathname} from 'next/navigation';
+import {usePathname, useSearchParams} from 'next/navigation';
 import {NavBarHeight} from '../../../const';
 import WriteMenuModal from './WriteMenuModal';
+
+const WriteMenuOpenQuery = 'isWriteMenuOpen';
+const WriteMenuOpenQueryValue = 'true';
 
 const navItems = [
   {
@@ -22,7 +25,6 @@ const navItems = [
     ),
     label: '홈',
     url: {pathname: '/'},
-    isMenuOpenOnClick: false,
   },
   {
     Icon: (
@@ -31,8 +33,7 @@ const navItems = [
       </svg>
     ),
     label: '글쓰기',
-    url: {query: {isWriteMenuOpen: 'true'}},
-    isMenuOpenOnClick: true,
+    url: {query: {[WriteMenuOpenQuery]: WriteMenuOpenQueryValue}},
   },
   {
     Icon: (
@@ -42,19 +43,21 @@ const navItems = [
     ),
     label: '내 정보',
     url: {pathname: '/profile'},
-    isMenuOpenOnClick: false,
   },
 ];
 
 export default function BottomNavBar() {
   const pathname = usePathname();
+  const searchparams = useSearchParams();
+
+  const isWriteMenuOpen = searchparams.get(WriteMenuOpenQuery) === WriteMenuOpenQueryValue;
 
   return (
     <nav className={`fixed bottom-0 w-full h-[${NavBarHeight}px]`}>
       <div className="flex justify-between border-t-[1px] bg-[#fafafa] border-lineColor text-[#637588]">
-        {navItems.map(({Icon, label, url, isMenuOpenOnClick}) => (
+        {navItems.map(({Icon, label, url}) => (
           <div key={label} className="flex-1">
-            {isMenuOpenOnClick && <WriteMenuModal />}
+            {isWriteMenuOpen && <WriteMenuModal />}
             <Link
               className="py-2 flex flex-col items-center justify-end"
               href={{pathname: url.pathname ?? pathname, query: url.query ?? {}}}

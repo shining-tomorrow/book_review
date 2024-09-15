@@ -29,7 +29,7 @@ export default function RootLayout({
             <div
               style={{paddingBottom: NavBarHeight + 'px'}}
               className={clsx(
-                'px-8 h-screen overflow-auto',
+                'px-4 md:px-8 h-screen overflow-auto',
                 `pt-[${MobileHeaderHeight}px]`,
                 `md:pt-[${DesktopHeaderHeight}px]`,
               )}
