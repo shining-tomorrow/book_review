@@ -8,7 +8,6 @@
   --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono', 'Roboto Mono', 'Oxygen Mono',
     'Ubuntu Monospace', 'Source Code Pro', 'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 
-  --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 
@@ -34,7 +33,6 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
 
@@ -68,7 +66,7 @@ body {
 
 body {
   min-height: 100vh;
-  color: rgb(var(--foreground-rgb));
+  color: rgb(0, 0, 0);
   background: linear-gradient(180deg, rgb(245, 245, 245) 35%, rgba(255, 255, 255) 100%);
   background-repeat: no-repeat; /* 그라디언트 반복을 방지 */
   background-size: cover; /* 그라디언트를 요소에 맞게 확장 */
