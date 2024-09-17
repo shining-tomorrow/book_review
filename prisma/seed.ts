@@ -13,9 +13,9 @@ async function main() {
         nickname: 'aspyn',
         name: '김소정',
         password: '1234',
-        balletStartDate: new Date('2022-11-01'),
-        balletAcademy: '임진발레',
-        balletSessionsPerWeek: 3,
+        ballet_start_date: new Date('2022-11-01'),
+        ballet_academy: '임진발레',
+        ballet_sessions_per_week: 3,
       },
     });
   }
@@ -23,16 +23,12 @@ async function main() {
   let balletRecord = await prisma.balletRecord.findUnique({where: {id: process.env.TEST_BALLET_RECORD_ID}});
 
   if (!balletRecord) {
-    balletRecord = await prisma.balletRecord.upsert({
-      where: {
-        date_userId: {date: new Date('2024-07-25'), userId: user.id},
-      },
-      update: {},
-      create: {
+    balletRecord = await prisma.balletRecord.create({
+      data: {
         id: process.env.TEST_BALLET_RECORD_ID,
         date: new Date('2024-07-25'),
-        balletDone: true,
-        userId: user.id,
+        ballet_done: true,
+        user_id: user.id,
       },
     });
   }
@@ -43,21 +39,22 @@ async function main() {
     // PollUncheckedCreateInput 타입
     poll = await prisma.poll.create({
       data: {
-        authorId: user.id,
+        author_id: user.id,
+        id: process.env.TEST_POLL_ID,
         title: '최애 발레 슈즈 투표',
         description:
           '취미 발레 하시는 분들은 어떤 슈즈 많이 신으세요?<br>가격대도 다양하고, 처음이라 어떤 슈즈를 사야할지 모르겠어요😢',
-        allowMultiple: true,
-        thumbnailUrl:
+        allow_multiple: true,
+        thumbnail_url:
           'https://zjnkgnavmphkyf5n.public.blob.vercel-storage.com/nihal-demirci-erenay-UYG1U5wj3Tk-unsplash-RKVLJAGugUPwH0o5x4eWvNUCq2Q9PX.jpg',
         options: {
           create: [
-            {authorId: user.id, content: '그리쉬코 바닥분리형 천슈즈 Model NO.10'},
-            {authorId: user.id, content: '웨어무아 가죽슈즈 WM406'},
-            {authorId: user.id, content: 'Degas 파리 오페라스쿨 발레슈즈'},
-            {authorId: user.id, content: '웨어무아 베스타 vesta'},
-            {authorId: user.id, content: '알롱제 Luzio 천슈즈'},
-            {authorId: user.id, content: 'Capezio 2028W Juliet Canvas Shoes'},
+            {author_id: user.id, content: '그리쉬코 바닥분리형 천슈즈 Model NO.10'},
+            {author_id: user.id, content: '웨어무아 가죽슈즈 WM406'},
+            {author_id: user.id, content: 'Degas 파리 오페라스쿨 발레슈즈'},
+            {author_id: user.id, content: '웨어무아 베스타 vesta'},
+            {author_id: user.id, content: '알롱제 Luzio 천슈즈'},
+            {author_id: user.id, content: 'Capezio 2028W Juliet Canvas Shoes'},
           ],
         },
       },
