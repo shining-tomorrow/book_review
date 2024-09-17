@@ -1,4 +1,4 @@
-import {OptionItem} from '@/db/poll';
+import {OptionItem, PostPollOptionRequest} from '@/db/poll';
 import {FormEvent} from 'react';
 
 const PollView = ({id, options}: {id: string; options: OptionItem[]}) => {
@@ -6,8 +6,23 @@ const PollView = ({id, options}: {id: string; options: OptionItem[]}) => {
     e.preventDefault();
 
     const formData = new FormData(e.target as HTMLFormElement);
-    const data = Object.fromEntries(formData.entries());
-    console.log('data', data);
+
+    const requestBody: PostPollOptionRequest = {
+      pollId: id,
+      selectedOptionIds: Array.from(formData.entries()).map(([key]) => key),
+    };
+
+    fetch('/api/poll/' + id, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    }).then(res => {
+      if (res.ok) {
+        alert('투표 완료');
+      }
+    });
   };
 
   return (

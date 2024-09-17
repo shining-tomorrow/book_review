@@ -1,4 +1,5 @@
 import {sql} from '@vercel/postgres';
+import {prisma} from './client';
 
 export interface PollListItem {
   id: string;
@@ -110,4 +111,30 @@ export async function fetchDetailPollItem(id: string): Promise<DetailPollItem> {
   rows[0].options = optionRows;
 
   return rows[0];
+}
+
+export interface PostPollOptionRequest {
+  pollId: string;
+  selectedOptionIds: string[];
+}
+
+export async function postPollOption({pollId, selectedOptionIds}: PostPollOptionRequest): Promise<{count: number}> {
+  await prisma.userVote.deleteMany({
+    where: {
+      AND: {
+        user_id: process.env.TEST_USER_ID,
+        poll_id: pollId,
+      },
+    },
+  });
+
+  const result = await prisma.userVote.createMany({
+    data: selectedOptionIds.map(optionId => ({
+      user_id: process.env.TEST_USER_ID ?? '',
+      poll_id: pollId,
+      option_id: optionId,
+    })),
+  });
+
+  return result;
 }
