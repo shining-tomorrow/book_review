@@ -171,7 +171,7 @@ model BalletPostRecord {
 
 // 투표
 model Poll {
-  id                String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                String        @unique @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   created_at        DateTime      @default(now()) @db.Timestamptz
   updated_at        DateTime      @updatedAt @db.Timestamptz
   title             String        @db.VarChar(200)

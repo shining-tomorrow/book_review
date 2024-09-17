@@ -3,7 +3,17 @@
 import {OptionItem, PostPollOptionRequest} from '@/db/poll';
 import {FormEvent, useState} from 'react';
 
-const PollView = ({id, options}: {id: string; options: OptionItem[]}) => {
+const PollView = ({
+  id,
+  options,
+  setIsResultView,
+  getPollList,
+}: {
+  id: string;
+  options: OptionItem[];
+  setIsResultView: Function;
+  getPollList: Function;
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (e: FormEvent) => {
@@ -36,6 +46,9 @@ const PollView = ({id, options}: {id: string; options: OptionItem[]}) => {
       }
 
       setIsLoading(false);
+
+      setIsResultView(true);
+      getPollList();
     });
   };
 

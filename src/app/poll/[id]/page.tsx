@@ -81,7 +81,7 @@ const Page = () => {
     });
   };
 
-  useEffect(() => {
+  const getPollList = () => {
     fetch('/api/poll/' + pollId)
       .then(response => response.json())
       .then(response => {
@@ -89,6 +89,10 @@ const Page = () => {
         setResponse(value);
         setTopOptions(value.options);
       });
+  };
+
+  useEffect(() => {
+    getPollList();
   }, [pollId]);
 
   if (!response) {
@@ -121,7 +125,12 @@ const Page = () => {
       {isResultView ? (
         <PollResult pollDetail={response} topOptions={topOptions} setIsResultView={setIsResultView} />
       ) : (
-        <PollView id={response.id} options={response.options} />
+        <PollView
+          id={response.id}
+          options={response.options}
+          setIsResultView={setIsResultView}
+          getPollList={getPollList}
+        />
       )}
     </div>
   );
