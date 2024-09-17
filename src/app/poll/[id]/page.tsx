@@ -66,20 +66,7 @@ const Page = () => {
 
   const [isResultView, setIsResultView] = useState(true);
   const [response, setResponse] = useState<DetailPollItem>();
-
-  let topOptions: OptionItem[] = [];
-
-  const setTopOptions = (options: OptionItem[]) => {
-    topOptions = [options[0]];
-
-    options.forEach(option => {
-      if (option.vote_count > topOptions[0].vote_count) {
-        topOptions = [option];
-      } else if (option.vote_count === topOptions[0].vote_count) {
-        topOptions.push(option);
-      }
-    });
-  };
+  const [topOptions, setTopOptions] = useState<OptionItem[]>([]);
 
   const getPollList = () => {
     fetch('/api/poll/' + pollId)
@@ -87,7 +74,17 @@ const Page = () => {
       .then(response => {
         const value = response ?? MockPollItem;
         setResponse(value);
-        setTopOptions(value.options);
+        let _topOptions = [value.options[0]];
+
+        value.options.forEach((option: OptionItem) => {
+          if (option.vote_count > _topOptions[0].vote_count) {
+            _topOptions = [option];
+          } else if (option.vote_count === _topOptions[0].vote_count) {
+            _topOptions.push(option);
+          }
+        });
+
+        setTopOptions(_topOptions);
       });
   };
 
