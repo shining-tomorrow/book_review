@@ -1,15 +1,27 @@
+'use client';
+
 import {OptionItem, PostPollOptionRequest} from '@/db/poll';
-import {FormEvent} from 'react';
+import {FormEvent, useState} from 'react';
 
 const PollView = ({id, options}: {id: string; options: OptionItem[]}) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     const formData = new FormData(e.target as HTMLFormElement);
+    const selectedOptionIds = Array.from(formData.entries()).map(([key]) => key);
+
+    if (!selectedOptionIds.length) {
+      alert('투표할 항목을 선택해주세요.');
+      return;
+    }
+
+    setIsLoading(true);
 
     const requestBody: PostPollOptionRequest = {
       pollId: id,
-      selectedOptionIds: Array.from(formData.entries()).map(([key]) => key),
+      selectedOptionIds,
     };
 
     fetch('/api/poll/' + id, {
@@ -22,6 +34,8 @@ const PollView = ({id, options}: {id: string; options: OptionItem[]}) => {
       if (res.ok) {
         alert('투표 완료');
       }
+
+      setIsLoading(false);
     });
   };
 
