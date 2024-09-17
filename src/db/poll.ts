@@ -9,10 +9,10 @@ export interface PollListItem {
   description: string;
   thumbnail_url: string;
   end_date: Date | null;
-  participant_count: number;
   author_id: number;
   author_nickname: string;
   has_voted: boolean;
+  vote_count: number;
 }
 
 export async function fetchPollList(isCurrent: boolean): Promise<PollListItem[]> {
@@ -22,17 +22,24 @@ export async function fetchPollList(isCurrent: boolean): Promise<PollListItem[]>
    */
   const {rows} = await sql.query(
     `
-    select poll.id, poll.created_at, poll.updated_at, poll.title, poll.description, poll.thumbnail_url, poll.end_date, poll.participant_count, 
+    select poll.id, poll.created_at, poll.updated_at, poll.title, poll.description, poll.thumbnail_url, poll.end_date, 
     poll.author_id, user_table.nickname as author_nickname, 
+    count(DISTINCT user_vote.user_id) as vote_count,
     case 
-      when user_vote.user_id is not null then true
+      when Exists (
+        select 1
+        from "UserVote" as uv
+        where uv.poll_id = poll.id and uv.user_id=$1
+      )
+      then true
       else false
     end as has_voted
     from "Poll" as poll
     join "User" as user_table on poll.author_id = user_table.id
-    left join "UserVote" as user_vote on poll.id = user_vote.poll_id AND user_vote.user_id=$1 ` +
+    left join "UserVote" as user_vote on poll.id = user_vote.poll_id` +
       `${isCurrent ? ` where poll.end_date >= now() or poll.end_date is null` : ` where poll.end_date < now()`}` +
-      ` order by poll.end_date desc`,
+      ` group by poll.id, user_table.id
+        order by poll.end_date desc`,
     [process.env.TEST_USER_ID],
   );
 
@@ -45,7 +52,7 @@ export interface DetailPollItem {
   description: string;
   thumbnail_url: string;
   end_date: Date | null;
-  participant_count: number;
+  vote_count: number;
   author_id: string;
   author_nickname: string;
   created_at: string; // yyyy-MM-dd HH:mm:ss
@@ -72,11 +79,15 @@ export async function fetchDetailPollItem(id: string): Promise<DetailPollItem> {
    */
   const {rows} = await sql.query(
     `
-    select poll.*, 
-    user_table.nickname as author_nickname 
+    select 
+      poll.*, 
+      user_table.nickname as author_nickname,
+      count (DISTINCT user_vote.user_id) as vote_count 
     from "Poll" as poll 
     join "User" as user_table on poll.author_id = user_table.id
+    left join "UserVote" as user_vote on poll.id = user_vote.poll_id
     where poll.id=$1
+    group by poll.id, user_table.nickname
   `,
     [id],
   );

@@ -180,7 +180,6 @@ model Poll {
   description       String
   thumbnail_url     String?
   poll_comments     PollComment[]
-  participant_count Int           @default(0)
   end_date          DateTime?     @db.Timestamptz
   allow_multiple    Boolean
   options           PollOption[]

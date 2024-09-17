@@ -11,7 +11,7 @@ const MockPollItem: DetailPollItem = {
   author_nickname: 'test-user-nickname',
   id: '1',
   title: '최애 발레 슈즈 투표',
-  participant_count: 9,
+  vote_count: 9,
   thumbnail_url:
     'https://zjnkgnavmphkyf5n.public.blob.vercel-storage.com/nihal-demirci-erenay-UYG1U5wj3Tk-unsplash-RKVLJAGugUPwH0o5x4eWvNUCq2Q9PX.jpg',
   description:
@@ -108,7 +108,7 @@ const Page = () => {
           {/* end_date 타입 확인하기 */}
           <div>
             {response.end_date ? String(response.end_date) : '마감 없음'} |{' '}
-            {response.allow_multiple ? '복수 선택' : '단일 선택'} | {response.participant_count}명 참여
+            {response.allow_multiple ? '복수 선택' : '단일 선택'} | {response.vote_count}명 참여
           </div>
         </div>
       </div>

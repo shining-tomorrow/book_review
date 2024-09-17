@@ -29,7 +29,7 @@ const PollResult = ({
             <div key={option.id} className="mt-[8px]">
               <div>{option.content}</div>
               <div className="flex mt-[4px]">
-                <ProgressBar percentage={(option.vote_count / pollDetail.participant_count) * 100} />
+                <ProgressBar percentage={(option.vote_count / pollDetail.vote_count) * 100} />
                 <span>&nbsp;{option.vote_count}표</span>
                 {isTopOption && <FaCrown size="20" color="#ffb743" className="ml-[8px]" />}
                 {option.has_voted && <FaCircleCheck size="20" color="green" className="ml-[8px]" />}
