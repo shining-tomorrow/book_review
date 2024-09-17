@@ -184,6 +184,8 @@ model Poll {
   allowMultiple Boolean
   options PollOption[]
   userVote UserVote[]
+
+  @@unique([endDate(sort: Desc), createdAt(sort: Desc), authorId])
 }
 
 model PollComment {
