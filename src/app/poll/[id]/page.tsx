@@ -1,3 +1,5 @@
+import ProgressBar from '@/ui/poll/ProgressBar';
+import {FaCircleCheck} from 'react-icons/fa6';
 import {PollItem} from '../page';
 
 interface DetailPollItem extends Omit<PollItem, 'hasVoted'> {
@@ -10,7 +12,7 @@ interface DetailPollItem extends Omit<PollItem, 'hasVoted'> {
   endDate: string | null; // 마감 없을 때 null
   allowMultiple: boolean; // 복수 선택 가능 여부
   options: OptionItem[];
-  selectedOptionId: string | null; // 유저가 선택한 옵션 id, 비로그인 상태이거나 투표 전이라면 null
+  selectedOptionIdList: string[]; // 유저가 선택한 옵션 id, 비로그인 상태이거나 투표 전이라면 null
 }
 
 interface OptionItem {
@@ -66,7 +68,7 @@ const MockPollItem: DetailPollItem = {
       voteCount: 6,
     },
   ],
-  selectedOptionId: '3',
+  selectedOptionIdList: ['3'],
 };
 
 const page = () => {
@@ -98,9 +100,16 @@ const page = () => {
       </div>
       <div>
         {MockPollItem.options.map(option => {
+          const isSelected = MockPollItem.selectedOptionIdList.some(id => id === option.id);
+
           return (
-            <div key={option.id}>
-              {option.content} | {option.voteCount}표
+            <div key={option.id} className="mt-[8px]">
+              <div>{option.content}</div>
+              <div className="flex mt-[4px]">
+                <ProgressBar percentage={(option.voteCount / MockPollItem.participantCount) * 100} />
+                <span>&nbsp;{option.voteCount}표</span>
+                {isSelected && <FaCircleCheck size="20" color="green" className="ml-[8px]" />}
+              </div>
             </div>
           );
         })}
