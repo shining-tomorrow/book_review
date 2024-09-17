@@ -6,13 +6,11 @@ async function main() {
   let user = await prisma.user.findUnique({where: {id: process.env.TEST_USER_ID}});
 
   if (!user) {
-    user = await prisma.user.upsert({
-      where: {email: 'aspyn_test@test.com'},
-      update: {},
-      create: {
+    user = await prisma.user.create({
+      data: {
         id: process.env.TEST_USER_ID,
         email: 'aspyn_test@test.com',
-        nickName: 'aspyn',
+        nickname: 'aspyn',
         name: '김소정',
         password: '1234',
         balletStartDate: new Date('2022-11-01'),
