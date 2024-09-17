@@ -1,10 +1,13 @@
-import ProgressBar from '@/ui/poll/ProgressBar';
-import {FaCircleCheck, FaCrown} from 'react-icons/fa6';
+'use client';
+
+import PollResult from '@/ui/poll/PollResult';
+import PollView from '@/ui/poll/PollView';
+import {useState} from 'react';
 import {PollItem} from '../page';
 
 const mockUserId = 'test-user-id';
 
-interface DetailPollItem extends Omit<PollItem, 'hasVoted'> {
+export interface DetailPollItem extends Omit<PollItem, 'hasVoted'> {
   creator: {
     id: string; // 유저의 다른 투표를 보거나 다른 작업을 보여줄 때 사용
     nickname: string;
@@ -17,7 +20,7 @@ interface DetailPollItem extends Omit<PollItem, 'hasVoted'> {
   selectedOptionIdList: string[]; // 유저가 선택한 옵션 id, 비로그인 상태이거나 투표 전이라면 null
 }
 
-interface OptionItem {
+export interface OptionItem {
   id: string;
   content: string;
   voteCount: number;
@@ -73,7 +76,9 @@ const MockPollItem: DetailPollItem = {
   selectedOptionIdList: ['3'],
 };
 
-const page = () => {
+const Page = () => {
+  const [isResultView, setIsResultView] = useState(true);
+
   let topOptions: OptionItem[] = [MockPollItem.options[0]];
 
   MockPollItem.options.forEach(option => {
@@ -98,7 +103,7 @@ const page = () => {
       </div>
 
       {/* TODO. 수정, 삭제 버튼 추가하기 */}
-      {MockPollItem.creator.id === mockUserId && (
+      {isResultView && MockPollItem.creator.id === mockUserId && (
         <div className="flex">
           <div className="ml-auto">
             <span>수정</span> | <span>삭제</span>
@@ -106,39 +111,13 @@ const page = () => {
         </div>
       )}
 
-      <div className="flex flex-col justify-items-center items-center mt-[10px]">
-        <div className="flex flex-col justify-items-center items-center">
-          <div className="bg-[#2ecc71] opacity-[0.87] px-[8px] py-[4px] my-[4px] rounded-[20px] w-fit">
-            &nbsp;1위&nbsp;
-          </div>
-          {topOptions.map(option => {
-            return <div key={option.id}>{option.content}</div>;
-          })}
-        </div>
-        <div className="pt-[20px] mt-[10px] border-t-lineColor border-t-[1px]">
-          {MockPollItem.options.map(option => {
-            const isSelected = MockPollItem.selectedOptionIdList.some(id => id === option.id);
-            const isTopOption = topOptions.some(topOption => topOption.id === option.id);
-
-            return (
-              <div key={option.id} className="mt-[8px]">
-                <div>{option.content}</div>
-                <div className="flex mt-[4px]">
-                  <ProgressBar percentage={(option.voteCount / MockPollItem.participantCount) * 100} />
-                  <span>&nbsp;{option.voteCount}표</span>
-                  {isTopOption && <FaCrown size="20" color="#ffb743" className="ml-[8px]" />}
-                  {isSelected && <FaCircleCheck size="20" color="green" className="ml-[8px]" />}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <div className="flex justify-center items-center h-[45px] w-full md:w-[330px] rounded-[15px] border-[1px] border-lineColor my-[10px] cursor-pointer md:hover:scale-90 md:hover:bg-gray-100">
-          다시 투표하기
-        </div>
-      </div>
+      {isResultView ? (
+        <PollResult pollDetail={MockPollItem} topOptions={topOptions} setIsResultView={setIsResultView} />
+      ) : (
+        <PollView id={MockPollItem.id} options={MockPollItem.options} />
+      )}
     </div>
   );
 };
 
-export default page;
+export default Page;
