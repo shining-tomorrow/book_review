@@ -14,7 +14,7 @@ const ProgressBar = ({percentage}: {percentage: number}) => {
 
   return (
     <div className="w-[200px]">
-      <div className="w-full h-[20px] rounded-[10px] bg-[#e6e6e6] mb-[10px]">
+      <div className="w-full h-[20px] rounded-[10px] bg-customGray mb-[10px]">
         <div
           className="h-full rounded-[10px] bg-[#2ecc71] transition-[width] duration-500 ease-out"
           style={{width: progressBarWidth + '%', transition: 'width 0.5s ease-out'}}

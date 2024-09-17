@@ -1,5 +1,5 @@
 import ProgressBar from '@/ui/poll/ProgressBar';
-import {FaCircleCheck} from 'react-icons/fa6';
+import {FaCircleCheck, FaCrown} from 'react-icons/fa6';
 import {PollItem} from '../page';
 
 interface DetailPollItem extends Omit<PollItem, 'hasVoted'> {
@@ -84,35 +84,43 @@ const page = () => {
 
   return (
     <div>
-      <div>{MockPollItem.title}</div>
-      <div>
-        <div>{MockPollItem.creator.nickname}</div>
-        <div>
-          {MockPollItem.endDate ?? '마감 없음'} | {MockPollItem.allowMultiple ? '복수 선택' : '단일 선택'} |{' '}
-          {MockPollItem.participantCount}명 참여
+      <div className="pb-[8px] border-b-[2px] border-b-[lineColor]">
+        <div className="my-[8px] text-lg">{MockPollItem.title}</div>
+        <div className="text-sm flex flex-col md:flex-row md:justify-between">
+          <div>작성자: {MockPollItem.creator.nickname}</div>
+          <div>
+            {MockPollItem.endDate ?? '마감 없음'} | {MockPollItem.allowMultiple ? '복수 선택' : '단일 선택'} |{' '}
+            {MockPollItem.participantCount}명 참여
+          </div>
         </div>
       </div>
-      <div>
-        1위:{' '}
-        {topOptions.map(option => {
-          return <div key={option.id}>{option.content}</div>;
-        })}
-      </div>
-      <div>
-        {MockPollItem.options.map(option => {
-          const isSelected = MockPollItem.selectedOptionIdList.some(id => id === option.id);
+      <div className="flex flex-col justify-items-center items-center mt-[10px]">
+        <div className="flex flex-col justify-items-center items-center">
+          <div className="bg-[#2ecc71] opacity-[0.87] px-[8px] py-[4px] my-[4px] rounded-[20px] w-fit">
+            &nbsp;1위&nbsp;
+          </div>
+          {topOptions.map(option => {
+            return <div key={option.id}>{option.content}</div>;
+          })}
+        </div>
+        <div className="pt-[20px] mt-[10px] border-t-lineColor border-t-[1px]">
+          {MockPollItem.options.map(option => {
+            const isSelected = MockPollItem.selectedOptionIdList.some(id => id === option.id);
+            const isTopOption = topOptions.some(topOption => topOption.id === option.id);
 
-          return (
-            <div key={option.id} className="mt-[8px]">
-              <div>{option.content}</div>
-              <div className="flex mt-[4px]">
-                <ProgressBar percentage={(option.voteCount / MockPollItem.participantCount) * 100} />
-                <span>&nbsp;{option.voteCount}표</span>
-                {isSelected && <FaCircleCheck size="20" color="green" className="ml-[8px]" />}
+            return (
+              <div key={option.id} className="mt-[8px]">
+                <div>{option.content}</div>
+                <div className="flex mt-[4px]">
+                  <ProgressBar percentage={(option.voteCount / MockPollItem.participantCount) * 100} />
+                  <span>&nbsp;{option.voteCount}표</span>
+                  {isTopOption && <FaCrown size="20" color="#ffb743" className="ml-[8px]" />}
+                  {isSelected && <FaCircleCheck size="20" color="green" className="ml-[8px]" />}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );

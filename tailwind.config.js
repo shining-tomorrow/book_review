@@ -7,6 +7,7 @@ module.exports = {
       colors: {
         lineColor: '#d4d8e9',
         buttonColor: '#0c1325',
+        customGray: '#e6e6e6',
       },
       spacing: {
         'header-height': '48px',
