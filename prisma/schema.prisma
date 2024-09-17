@@ -50,6 +50,10 @@ model User {
   commentReactions CommentReaction[]
   balletPosts BalletPost[]
   balletRecord BalletRecord[]
+  polls Poll[]
+  pollComments PollComment[]
+  userVote UserVote[]
+  pollOptions PollOption[]
 }
 
 // 게시판
@@ -163,3 +167,55 @@ model BalletPostRecord {
 }
 
 // 학원 히스토리 추가 예정
+
+// 투표
+model Poll {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+  title String @db.VarChar(200)
+  author User @relation(fields: [authorId], references: [id])
+  authorId String @db.Uuid
+  description String
+  thumbnailUrl String?
+  pollComments PollComment[]
+  participantCount Int @default(0)
+  endDate DateTime? @db.Timestamptz
+  allowMultiple Boolean
+  options PollOption[]
+  userVote UserVote[]
+}
+
+model PollComment {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+  author User @relation(fields: [authorId], references: [id])
+  authorId String @db.Uuid
+  poll Poll @relation(fields: [pollId], references: [id])
+  pollId String @db.Uuid
+}
+
+model PollOption {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content String
+  voteCount Int @default(0)
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+  poll Poll @relation(fields: [pollId], references: [id])
+  pollId String @db.Uuid
+  author User @relation(fields: [authorId], references: [id])
+  authorId String @db.Uuid
+  userVote UserVote[]
+}
+
+model UserVote {
+ user User @relation(fields: [userId], references: [id])
+ userId String @db.Uuid
+ poll Poll @relation(fields: [pollId], references: [id])
+ pollId String @db.Uuid
+ pollOption PollOption @relation(fields: [optionId], references: [id])
+ optionId String @db.Uuid
+
+ @@id([userId, pollId, optionId])
+}

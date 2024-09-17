@@ -15,7 +15,7 @@ export interface PollItem {
   title: string;
   participantCount: number; // 몇 명이 투표에 참여했는지
   hasVoted: boolean; // 유저가 투표에 참여했는지
-  image: string | null; // 투표 만들 때 이미지 등록 안 했으면 디폴트 이미지 노출
+  thumbnailUrl: string | null; // 투표 만들 때 이미지 등록 안 했으면 디폴트 이미지 노출
 }
 
 const mockPollList: PollItem[] = Array.from({length: 10}, (_, i) => ({
@@ -26,7 +26,7 @@ const mockPollList: PollItem[] = Array.from({length: 10}, (_, i) => ({
       : '여러분의 최애 발레 슈즈를 투표해주세요. 길게길게testesteststestetstsettetestestesteststestetstsettetes',
   participantCount: 3,
   hasVoted: Boolean(i % 2),
-  image:
+  thumbnailUrl:
     i % 2
       ? null
       : 'https://zjnkgnavmphkyf5n.public.blob.vercel-storage.com/nihal-demirci-erenay-UYG1U5wj3Tk-unsplash-RKVLJAGugUPwH0o5x4eWvNUCq2Q9PX.jpg',
@@ -44,12 +44,18 @@ const page = () => {
       </div>
       {/* 설문 조사 리스트 */}
       <div className="flex flex-col">
-        {mockPollList.map(({id, title, participantCount, hasVoted, image}) => (
+        {mockPollList.map(({id, title, participantCount, hasVoted, thumbnailUrl}) => (
           <Link href={'/poll/' + id} className="border-[1px] border-gray-200 p-4 mt-4 rounded-[8px]" key={id}>
             <div className="flex flex-row w-full items-center">
               <div className="w-[60px] h-[60px] overflow-hidden flex justify-center items-center rounded-full bg-[#e6e7e9]">
-                {image ? (
-                  <Image src={image} alt="투표 이미지" width="60" height="60" className="w-full h-full object-cover" />
+                {thumbnailUrl ? (
+                  <Image
+                    src={thumbnailUrl}
+                    alt="투표 이미지"
+                    width="60"
+                    height="60"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <MdHowToVote className="w-[30px] h-auto" />
                 )}

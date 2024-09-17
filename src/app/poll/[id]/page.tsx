@@ -8,7 +8,7 @@ import {PollItem} from '../page';
 const mockUserId = 'test-user-id';
 
 export interface DetailPollItem extends Omit<PollItem, 'hasVoted'> {
-  creator: {
+  author: {
     id: string; // 유저의 다른 투표를 보거나 다른 작업을 보여줄 때 사용
     nickname: string;
   };
@@ -18,6 +18,10 @@ export interface DetailPollItem extends Omit<PollItem, 'hasVoted'> {
   allowMultiple: boolean; // 복수 선택 가능 여부
   options: OptionItem[];
   selectedOptionIdList: string[]; // 유저가 선택한 옵션 id, 비로그인 상태이거나 투표 전이라면 null
+  comments: {
+    author: {id: string; nickname: string};
+    content: string;
+  }[];
 }
 
 export interface OptionItem {
@@ -27,14 +31,14 @@ export interface OptionItem {
 }
 
 const MockPollItem: DetailPollItem = {
-  creator: {
+  author: {
     id: 'test-user-id', // 유저의 다른 투표를 보거나 다른 작업을 보여줄 때 사용
     nickname: 'test-user-nickname',
   },
   id: '1',
   title: '최애 발레 슈즈 투표',
   participantCount: 9,
-  image:
+  thumbnailUrl:
     'https://zjnkgnavmphkyf5n.public.blob.vercel-storage.com/nihal-demirci-erenay-UYG1U5wj3Tk-unsplash-RKVLJAGugUPwH0o5x4eWvNUCq2Q9PX.jpg',
   description:
     '취미 발레 하시는 분들은 어떤 슈즈 많이 신으세요?<br>가격대도 다양하고, 처음이라 어떤 슈즈를 사야할지 모르겠어요😢',
@@ -74,6 +78,7 @@ const MockPollItem: DetailPollItem = {
     },
   ],
   selectedOptionIdList: ['3'],
+  comments: [],
 };
 
 const Page = () => {
@@ -94,7 +99,7 @@ const Page = () => {
       <div className="pb-[8px] border-b-[2px] border-b-[lineColor]">
         <div className="my-[8px] text-lg">{MockPollItem.title}</div>
         <div className="text-sm flex flex-col md:flex-row md:justify-between">
-          <div>작성자: {MockPollItem.creator.nickname}</div>
+          <div>작성자: {MockPollItem.author.nickname}</div>
           <div>
             {MockPollItem.endDate ?? '마감 없음'} | {MockPollItem.allowMultiple ? '복수 선택' : '단일 선택'} |{' '}
             {MockPollItem.participantCount}명 참여
@@ -103,7 +108,7 @@ const Page = () => {
       </div>
 
       {/* TODO. 수정, 삭제 버튼 추가하기 */}
-      {isResultView && MockPollItem.creator.id === mockUserId && (
+      {isResultView && MockPollItem.author.id === mockUserId && (
         <div className="flex">
           <div className="ml-auto">
             <span>수정</span> | <span>삭제</span>
