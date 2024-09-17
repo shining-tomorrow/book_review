@@ -2,7 +2,7 @@ import {NextAuthProvider} from '@/providers/NextAuthProvider';
 import {PageProvider} from '@/providers/PageProvider';
 import '@/styles/globals.css';
 import BottomNavBar from '@/ui/layout/BottomNavBar';
-import Header from '@/ui/layout/header';
+import Header from '@/ui/layout/Header';
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
 
