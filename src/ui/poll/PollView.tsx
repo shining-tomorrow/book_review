@@ -1,4 +1,4 @@
-import {OptionItem} from '@/app/poll/[id]/page';
+import {OptionItem} from '@/db/poll';
 import {FormEvent} from 'react';
 
 const PollView = ({id, options}: {id: string; options: OptionItem[]}) => {

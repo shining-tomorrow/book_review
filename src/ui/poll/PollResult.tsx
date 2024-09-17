@@ -1,4 +1,4 @@
-import {DetailPollItem, OptionItem} from '@/app/poll/[id]/page';
+import {DetailPollItem, OptionItem} from '@/db/poll';
 import {FaCircleCheck, FaCrown} from 'react-icons/fa6';
 import ProgressBar from './ProgressBar';
 
@@ -23,17 +23,16 @@ const PollResult = ({
       </div>
       <div className="pt-[20px] mt-[10px] border-t-lineColor border-t-[1px]">
         {pollDetail.options.map(option => {
-          const isSelected = pollDetail.selectedOptionIdList.some(id => id === option.id);
           const isTopOption = topOptions.some(topOption => topOption.id === option.id);
 
           return (
             <div key={option.id} className="mt-[8px]">
               <div>{option.content}</div>
               <div className="flex mt-[4px]">
-                <ProgressBar percentage={(option.voteCount / pollDetail.participantCount) * 100} />
-                <span>&nbsp;{option.voteCount}표</span>
+                <ProgressBar percentage={(option.vote_count / pollDetail.participant_count) * 100} />
+                <span>&nbsp;{option.vote_count}표</span>
                 {isTopOption && <FaCrown size="20" color="#ffb743" className="ml-[8px]" />}
-                {isSelected && <FaCircleCheck size="20" color="green" className="ml-[8px]" />}
+                {option.has_voted && <FaCircleCheck size="20" color="green" className="ml-[8px]" />}
               </div>
             </div>
           );

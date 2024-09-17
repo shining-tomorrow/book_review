@@ -30,9 +30,84 @@ export async function fetchPollList(isCurrent: boolean): Promise<PollListItem[]>
     from "Poll" as poll
     join "User" as user_table on poll.author_id = user_table.id
     left join "UserVote" as user_vote on poll.id = user_vote.poll_id AND user_vote.user_id=$1 ` +
-      `${isCurrent ? ` where poll.end_date >= now() or poll.end_date is null` : ` where poll.end_date < now()`}`,
+      `${isCurrent ? ` where poll.end_date >= now() or poll.end_date is null` : ` where poll.end_date < now()`}` +
+      ` order by poll.end_date desc`,
     [process.env.TEST_USER_ID],
   );
 
   return rows as unknown as PollListItem[];
+}
+
+export interface DetailPollItem {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail_url: string;
+  end_date: Date | null;
+  participant_count: number;
+  author_id: string;
+  author_nickname: string;
+  created_at: string; // yyyy-MM-dd HH:mm:ss
+  updated_at: string;
+  allow_multiple: boolean; // 복수 선택 가능 여부
+  options: OptionItem[];
+  // todo
+  comments?: {
+    author: {id: string; nickname: string};
+    content: string;
+  }[];
+}
+
+export interface OptionItem {
+  id: string;
+  content: string;
+  vote_count: number;
+  has_voted: boolean;
+}
+
+export async function fetchDetailPollItem(id: string): Promise<DetailPollItem> {
+  /**
+   * where 절이 마지막에 위치해야 함
+   */
+  const {rows} = await sql.query(
+    `
+    select poll.*, 
+    user_table.nickname as author_nickname 
+    from "Poll" as poll 
+    join "User" as user_table on poll.author_id = user_table.id
+    where poll.id=$1
+  `,
+    [id],
+  );
+
+  const {rows: optionRows} = await sql.query(
+    `
+    with option_votes as (
+      select
+        poll_option.id, count(user_vote.option_id) as vote_count
+      from "PollOption" as poll_option 
+      left join "UserVote" as user_vote on poll_option.id = user_vote.option_id
+      where poll_option.poll_id=$1
+      group by poll_option.id
+    ),
+    user_vote as (
+      select option_id from "UserVote" where user_id = $2 and poll_id = $1
+    )
+    select
+      poll_option.id, poll_option.content, coalesce(option_votes.vote_count, 0) as vote_count,
+      case
+        when user_vote.option_id is not null then true
+        else false
+      end as has_voted
+    from "PollOption" as poll_option
+    left join option_votes on poll_option.id = option_votes.id
+    left join user_vote on poll_option.id = user_vote.option_id
+    where poll_option.poll_id=$1
+  `,
+    [id, process.env.TEST_USER_ID],
+  );
+
+  rows[0].options = optionRows;
+
+  return rows[0];
 }
