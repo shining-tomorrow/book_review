@@ -1,11 +1,11 @@
+import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import {FaCircleCheck} from 'react-icons/fa6';
 import {IoIosArrowForward} from 'react-icons/io';
 import {IoPeopleOutline} from 'react-icons/io5';
 import {MdHowToVote} from 'react-icons/md';
-import {NavBarHeight} from '../../../const';
-import pollImage from '../../../public/polling.png';
+import {NavBarHeight} from '../../../../const';
 
 /**
  * TODO. db 구성하면 인터페이스 위치 바뀔 예정
@@ -36,16 +36,15 @@ const page = () => {
   const bottomPosition = NavBarHeight + 8;
 
   return (
-    <div className="py-[16px] px-2">
-      {/* 설문 조사 타이틀 */}
-      <div className="w-full flex items-end ml-[4px]">
-        <Image src={pollImage} alt="설문 조사" width="45" height="45" />
-        <h1 className="pl-[8px] text-lg">설문조사</h1>
-      </div>
+    <div>
       {/* 설문 조사 리스트 */}
       <div className="flex flex-col">
-        {mockPollList.map(({id, title, participantCount, hasVoted, thumbnailUrl}) => (
-          <Link href={'/poll/' + id} className="border-[1px] border-gray-200 p-4 mt-4 rounded-[8px]" key={id}>
+        {mockPollList.map(({id, title, participantCount, hasVoted, thumbnailUrl}, idx) => (
+          <Link
+            href={'/poll/' + id}
+            className={clsx('border-[1px] border-gray-200 p-4 rounded-[8px]', idx > 0 && 'mt-4')}
+            key={id}
+          >
             <div className="flex flex-row w-full items-center">
               <div className="w-[60px] h-[60px] overflow-hidden flex justify-center items-center rounded-full bg-[#e6e7e9]">
                 {thumbnailUrl ? (

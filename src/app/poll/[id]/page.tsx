@@ -3,7 +3,7 @@
 import PollResult from '@/ui/poll/PollResult';
 import PollView from '@/ui/poll/PollView';
 import {useState} from 'react';
-import {PollItem} from '../page';
+import {PollItem} from '../(pollList)/page';
 
 const mockUserId = 'test-user-id';
 
