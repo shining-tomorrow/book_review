@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import {usePathname, useSearchParams} from 'next/navigation';
-import {NavBarHeight} from '../../../const';
 import WriteMenuModal from './WriteMenuModal';
 
 const WriteMenuOpenQuery = 'isWriteMenuOpen';
@@ -53,8 +52,8 @@ export default function BottomNavBar() {
   const isWriteMenuOpen = searchparams.get(WriteMenuOpenQuery) === WriteMenuOpenQueryValue;
 
   return (
-    <nav className={`fixed bottom-0 w-full h-[${NavBarHeight}px]`}>
-      <div className="flex justify-between border-t-[1px] bg-[#fafafa] border-lineColor text-[#637588]">
+    <nav className={`fixed bottom-0 w-full h-bottom-nav-height bg-[#fafafa]`}>
+      <div className="flex justify-between border-t-[1px] border-lineColor text-[#637588]">
         {navItems.map(({Icon, label, url}) => (
           <div key={label} className="flex-1">
             {isWriteMenuOpen && <WriteMenuModal />}

@@ -1,9 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {DesktopHeaderHeight, MobileHeaderHeight} from '../../../const';
 import logoImage from '../../../public/logo.png';
 
-const HeightClass = `h-[${MobileHeaderHeight}px] md:h-[${DesktopHeaderHeight}px]`;
+const HeightClass = `h-header-height md:h-desktop-header-height`;
 
 const Header = () => {
   return (
