@@ -1,6 +1,10 @@
+'use client';
+
+import {PollListItem} from '@/db/poll';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
+import {useEffect, useState} from 'react';
 import {FaCircleCheck} from 'react-icons/fa6';
 import {IoIosArrowForward} from 'react-icons/io';
 import {IoPeopleOutline} from 'react-icons/io5';
@@ -13,9 +17,9 @@ import {NavBarHeight} from '../../../../const';
 export interface PollItem {
   id: string;
   title: string;
-  participantCount: number; // 몇 명이 투표에 참여했는지
-  hasVoted: boolean; // 유저가 투표에 참여했는지
-  thumbnailUrl: string | null; // 투표 만들 때 이미지 등록 안 했으면 디폴트 이미지 노출
+  participant_count: number; // 몇 명이 투표에 참여했는지
+  has_voted: boolean; // 유저가 투표에 참여했는지
+  thumbnail_url: string | null; // 투표 만들 때 이미지 등록 안 했으면 디폴트 이미지 노출
 }
 
 const mockPollList: PollItem[] = Array.from({length: 10}, (_, i) => ({
@@ -24,22 +28,38 @@ const mockPollList: PollItem[] = Array.from({length: 10}, (_, i) => ({
     i % 2
       ? '최애 발레 슈즈 투표'
       : '여러분의 최애 발레 슈즈를 투표해주세요. 길게길게testesteststestetstsettetestestesteststestetstsettetes',
-  participantCount: 3,
-  hasVoted: Boolean(i % 2),
-  thumbnailUrl:
-    i % 2
+  participant_count: 3,
+  has_voted: Boolean(i % 2),
+  thumbnail_url:
+    i % 2 === 0
       ? null
       : 'https://zjnkgnavmphkyf5n.public.blob.vercel-storage.com/nihal-demirci-erenay-UYG1U5wj3Tk-unsplash-RKVLJAGugUPwH0o5x4eWvNUCq2Q9PX.jpg',
 }));
 
-const page = () => {
+const Page = () => {
+  const [pollList, setPollList] = useState<PollListItem[]>([]);
   const bottomPosition = NavBarHeight + 8;
+
+  useEffect(() => {
+    let ignore = false;
+    fetch('/api/poll?isCurrent=true')
+      .then(response => response.json())
+      .then(response => {
+        if (!ignore) {
+          setPollList([...response, ...mockPollList]);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   return (
     <div>
       {/* 설문 조사 리스트 */}
       <div className="flex flex-col">
-        {mockPollList.map(({id, title, participantCount, hasVoted, thumbnailUrl}, idx) => (
+        {pollList.map(({id, title, participant_count, has_voted, thumbnail_url}, idx) => (
           <Link
             href={'/poll/' + id}
             className={clsx('border-[1px] border-gray-200 p-4 rounded-[8px]', idx > 0 && 'mt-4')}
@@ -47,9 +67,9 @@ const page = () => {
           >
             <div className="flex flex-row w-full items-center">
               <div className="w-[60px] h-[60px] overflow-hidden flex justify-center items-center rounded-full bg-[#e6e7e9]">
-                {thumbnailUrl ? (
+                {thumbnail_url ? (
                   <Image
-                    src={thumbnailUrl}
+                    src={thumbnail_url}
                     alt="투표 이미지"
                     width="60"
                     height="60"
@@ -66,14 +86,14 @@ const page = () => {
                 <div className="flex flex-row text-[#4e7397] text-sm font-normal leading-normal">
                   <div className="flex flex-row">
                     <IoPeopleOutline size="20" className="mr-[4px]" />
-                    {participantCount}명 참여
+                    {participant_count}명 참여
                   </div>
-                  {hasVoted && (
+                  {has_voted && (
                     <>
                       &nbsp;
                       <div>
                         <FaCircleCheck size="20" color="green" className="ml-[8px]" />
-                        {hasVoted}
+                        {has_voted}
                       </div>
                     </>
                   )}
@@ -94,4 +114,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
