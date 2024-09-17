@@ -2,6 +2,8 @@ import ProgressBar from '@/ui/poll/ProgressBar';
 import {FaCircleCheck, FaCrown} from 'react-icons/fa6';
 import {PollItem} from '../page';
 
+const mockUserId = 'test-user-id';
+
 interface DetailPollItem extends Omit<PollItem, 'hasVoted'> {
   creator: {
     id: string; // 유저의 다른 투표를 보거나 다른 작업을 보여줄 때 사용
@@ -94,6 +96,16 @@ const page = () => {
           </div>
         </div>
       </div>
+
+      {/* TODO. 수정, 삭제 버튼 추가하기 */}
+      {MockPollItem.creator.id === mockUserId && (
+        <div className="flex">
+          <div className="ml-auto">
+            <span>수정</span> | <span>삭제</span>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col justify-items-center items-center mt-[10px]">
         <div className="flex flex-col justify-items-center items-center">
           <div className="bg-[#2ecc71] opacity-[0.87] px-[8px] py-[4px] my-[4px] rounded-[20px] w-fit">
@@ -120,6 +132,9 @@ const page = () => {
               </div>
             );
           })}
+        </div>
+        <div className="flex justify-center items-center h-[45px] w-full md:w-[330px] rounded-[15px] border-[1px] border-lineColor my-[10px] cursor-pointer md:hover:scale-90 md:hover:bg-gray-100">
+          다시 투표하기
         </div>
       </div>
     </div>

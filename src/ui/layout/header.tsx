@@ -5,7 +5,7 @@ import BackButton from './BackButton';
 
 const Header = () => {
   return (
-    <header className="fixed w-full bg-[#f5f5f5] h-header-height md:h-desktop-header-height">
+    <header className="fixed w-full bg-[#f5f5f5] h-header-height md:h-desktop-header-height z-[1000]">
       <div className="w-[clac(100%-32px)] h-[calc(100%-8px)] mx-[16px] mt-[8px] border-b border-lineColor flex items-center">
         <BackButton />
         <Image
