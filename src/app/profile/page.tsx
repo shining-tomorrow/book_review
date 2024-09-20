@@ -4,7 +4,7 @@ import {ProfileImage} from '@/ui/profile/profile-image';
 import {DateTime} from 'luxon';
 
 type UserProfile = {
-  nickName: string | null;
+  nickname: string | null;
   profileImageUrl: string;
   balletStartDate: Date | null;
   balletAcademy: string | null;
@@ -22,7 +22,7 @@ export const getData = async (): Promise<{
   userProfile: UserProfile;
 }> => {
   const {
-    nickName = null,
+    nickname = null,
     profileImageUrl = null,
     balletStartDate = null,
     balletAcademy = null,
@@ -31,7 +31,7 @@ export const getData = async (): Promise<{
 
   return {
     userProfile: {
-      nickName,
+      nickname,
       profileImageUrl: profileImageUrl ?? DEFAULT_PROFILE_IMAGE_URL,
       balletStartDate,
       balletAcademy,
@@ -42,7 +42,7 @@ export const getData = async (): Promise<{
 
 const Page = async () => {
   const {
-    userProfile: {nickName, profileImageUrl, balletStartDate, balletAcademy, balletSessionsPerWeek},
+    userProfile: {nickname, profileImageUrl, balletStartDate, balletAcademy, balletSessionsPerWeek},
   } = await getData();
 
   // Prisma에서 가져온 날짜는 JavaScript Date 객체로 변환되어 있다
@@ -53,7 +53,7 @@ const Page = async () => {
       <div className="w-[100%] md:w-[75%]">
         <div className="flex flex-row py-8">
           <ProfileImage profileImageUrl={profileImageUrl} />
-          <div className="flex px-8 items-center text-xl">{nickName}</div>
+          <div className="flex px-8 items-center text-xl">{nickname}</div>
         </div>
         <div>
           <div>

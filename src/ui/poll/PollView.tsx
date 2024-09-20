@@ -1,13 +1,55 @@
-import {OptionItem} from '@/app/poll/[id]/page';
-import {FormEvent} from 'react';
+'use client';
 
-const PollView = ({id, options}: {id: string; options: OptionItem[]}) => {
+import {OptionItem, PostPollOptionRequest} from '@/db/poll';
+import {FormEvent, useState} from 'react';
+
+const PollView = ({
+  id,
+  options,
+  setIsResultView,
+  getPollList,
+}: {
+  id: string;
+  options: OptionItem[];
+  setIsResultView: Function;
+  getPollList: Function;
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     const formData = new FormData(e.target as HTMLFormElement);
-    const data = Object.fromEntries(formData.entries());
-    console.log('data', data);
+    const selectedOptionIds = Array.from(formData.entries()).map(([key]) => key);
+
+    if (!selectedOptionIds.length) {
+      alert('투표할 항목을 선택해주세요.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    const requestBody: PostPollOptionRequest = {
+      pollId: id,
+      selectedOptionIds,
+    };
+
+    fetch('/api/poll/' + id, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    }).then(res => {
+      if (res.ok) {
+        alert('투표 완료');
+      }
+
+      setIsLoading(false);
+
+      setIsResultView(true);
+      getPollList();
+    });
   };
 
   return (

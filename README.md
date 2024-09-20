@@ -33,6 +33,14 @@ ui 컴포넌트는 src/ui 폴더 하위에 넣는다.\
 
 src/db 폴더 하위에 테이블별로 폴더를 만든다.
 
+## DB schema 수정시
+
+`npx prisma migrate dev`\
+
+seed도 자동으로 해준다
+
+`npx prisma format` 을 실행하면 포맷팅도 해주고 수정도 해준다
+
 ## Seed
 
 (1) db reset 후 seed하기\
@@ -54,7 +62,3 @@ seed가 깔끔하게 성공할 수 있다!
 
 (3) seed만 할 때
 `npx prisma db seed`
-
-## db schema 수정시
-
-npx prisma migrate dev
