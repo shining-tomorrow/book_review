@@ -13,12 +13,12 @@ vercel 사이트 > storage > .env.local을 .env 파일에 복붙한다.
 
 blob도 동일하게 진행한다.
 
-(2) vercel 사이트에 db를 세팅하고 데이터를 seed한다.\
+(3) vercel 사이트에 db를 세팅하고 데이터를 seed한다.\
 방법은 아래 'seed' 항목에서 확인 가능하다.
 
 prisma init 실행시 자동으로 .env에 'DATABASE_URL' 키-값 쌍이 추가된다.
 
-(3) seed 후 vercel 사이트 > storage > User 테이블에서 본인이 테스트 할 userId를 확인한다.\
+(4) seed 후 vercel 사이트 > storage > User 테이블에서 본인이 테스트 할 userId를 확인한다.\
 .env 파일에 TEST_USER_ID="{userId}"를 추가한다.
 
 ## 파일의 위치

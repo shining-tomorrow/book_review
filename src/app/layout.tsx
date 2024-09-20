@@ -2,7 +2,7 @@ import {NextAuthProvider} from '@/providers/NextAuthProvider';
 import {PageProvider} from '@/providers/PageProvider';
 import '@/styles/globals.css';
 import BottomNavBar from '@/ui/layout/BottomNavBar';
-import Header from '@/ui/layout/header';
+import Header from '@/ui/layout/Header';
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
 
@@ -24,7 +24,9 @@ export default function RootLayout({
         <NextAuthProvider>
           <PageProvider>
             <Header />
-            <div className="px-8">{children}</div>
+            <div className="h-screen px-4 md:px-8 pb-bottom-nav-height overflow-auto pt-header-height md:pt-desktop-header-height">
+              {children}
+            </div>
             <BottomNavBar />
           </PageProvider>
         </NextAuthProvider>
