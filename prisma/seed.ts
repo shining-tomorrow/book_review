@@ -16,6 +16,8 @@ async function main() {
         ballet_start_date: new Date('2022-11-01'),
         ballet_academy: '임진발레',
         ballet_sessions_per_week: 3,
+        profile_image_url:
+          'https://zjnkgnavmphkyf5n.public.blob.vercel-storage.com/Screenshot%202024-09-24%20at%202.42.09%E2%80%AFAM-xyG8NY1itegh3C1Z3yH7u9eyCSBdIZ.png',
       },
     });
   }
