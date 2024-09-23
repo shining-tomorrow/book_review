@@ -20,7 +20,7 @@ const BalletDayCheck = ({record, onUpdate}: {record: RecordState; onUpdate: Func
       },
       body: JSON.stringify({
         date: record.date.toFormat(DATE_FORMAT),
-        balletDone: !record.balletDone,
+        ballet_done: !record.ballet_done,
       }),
     });
 
@@ -30,7 +30,7 @@ const BalletDayCheck = ({record, onUpdate}: {record: RecordState; onUpdate: Func
   const handleClick = async () => {
     toggleBalletDone();
 
-    if (record.balletDone) {
+    if (record.ballet_done) {
       return;
     }
 
@@ -60,14 +60,14 @@ const BalletDayCheck = ({record, onUpdate}: {record: RecordState; onUpdate: Func
 
   return (
     <div className="my-3">
-      {record.isToday && !record.balletDone ? (
+      {record.isToday && !record.ballet_done ? (
         <button className={className + ' w-full'} onClick={handleClick}>
           {prefix}발레했나요? 🩰
         </button>
       ) : (
         <div className="flex items-center justify-center">
           <div className={className + ' flex items-center justify-center h-[50px] text-center w-[50%] min-w-fit'}>
-            {record.balletDone ? (
+            {record.ballet_done ? (
               <>
                 {prefix}발레 완료 {record.isToday ? '🥳' : '🩰'}
               </>
