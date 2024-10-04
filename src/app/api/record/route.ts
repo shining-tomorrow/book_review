@@ -2,13 +2,13 @@ import {NextRequest, NextResponse} from 'next/server';
 import {fetchBalletRecord, updateBalletDone} from '../../../db/balletRecord';
 
 export async function PUT(request: NextRequest) {
-  const {date, balletDone} = await request.json();
+  const {date, ballet_done} = await request.json();
 
-  if (!date || typeof balletDone !== 'boolean') {
+  if (!date || typeof ballet_done !== 'boolean') {
     return NextResponse.json({error: 'Invalid request body'}, {status: 400});
   }
 
-  const data = await updateBalletDone(date, balletDone);
+  const data = await updateBalletDone(date, ballet_done);
 
   return NextResponse.json(data);
 }
@@ -16,8 +16,8 @@ export async function PUT(request: NextRequest) {
 export interface BalletRecordItemForClient {
   id: string;
   date: string;
-  balletDone: boolean;
-  userId: string;
+  ballet_done: boolean;
+  user_id: string;
 }
 interface BalletRecordResponseForClient {
   balletRecords: BalletRecordItemForClient[];
