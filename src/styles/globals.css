@@ -31,6 +31,29 @@
   --card-border-rgb: 131, 134, 135;
 }
 
+input[type='text']::placeholder {
+  color: transparent;
+}
+
+input[type='text']:focus::placeholder {
+  color: #ccc;
+}
+
+input[type='text']:focus {
+  outline: none;
+}
+
+textarea {
+  border: none;
+  outline: none;
+  resize: none; /* 크기 조절 핸들러 제거 */
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+  font: inherit; /* 부모 폰트를 상속 */
+  color: inherit; /* 부모 색상을 상속 */
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background-start-rgb: 0, 0, 0;
