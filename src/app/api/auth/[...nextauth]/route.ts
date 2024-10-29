@@ -9,7 +9,7 @@ import NaverProvider from 'next-auth/providers/naver';
 export const OPTIONS = {
   session: {
     strategy: 'jwt' as SessionStrategy,
-    maxAge: 60 * 60 * 1,
+    maxAge: 60 * 60 * 24,
   },
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
