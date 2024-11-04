@@ -1,4 +1,4 @@
-import Upload from '@/app/ui/upload/upload';
+import Upload from '@/ui/upload/Upload';
 import {list} from '@vercel/blob';
 import Image from 'next/image';
 
