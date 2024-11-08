@@ -106,10 +106,12 @@ const Page = () => {
           </Link>
         ))}
       </div>
-      {/* 투표 추가하기 버튼 */}
-      <div style={{bottom: bottomPosition}} className={`fixed w-full h-[72px] p-[16px]`}>
-        <button className="bg-buttonColor text-white">+ 투표 추가</button>
-      </div>
+      {/* 투표 추가하기 버튼, TODO: 어드민 권한 있는 사람에게만 노출? */}
+      <Link href="/poll/new">
+        <button className="fixed p-[16px] bg-buttonColor text-white" style={{bottom: bottomPosition, right: '2rem'}}>
+          + 투표 추가
+        </button>
+      </Link>
     </div>
   );
 };
