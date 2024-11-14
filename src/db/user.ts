@@ -9,3 +9,27 @@ export async function fetchUserProfile() {
 
   return user;
 }
+
+export async function isEmailExist(email: string) {
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  return !!user;
+}
+
+export async function isNicknameExist(nickname: string) {
+  const user = await prisma.user.findUnique({
+    where: {
+      nickname,
+    },
+  });
+
+  return !!user;
+}
+
+export async function createUser(userFormData: {email: string; password: string; nickname: string}) {
+  return prisma.user.create({data: userFormData});
+}
