@@ -3,8 +3,8 @@
 import {FormEventHandler, useCallback} from 'react';
 
 const RegisterForm = () => {
-  const isEmptyStringField = useCallback(
-    (field: FormDataEntryValue | null): field is File | null => !(typeof field === 'string' && !!field.trim()),
+  const validateStringField = useCallback(
+    (value: FormDataEntryValue | null): value is string => typeof value === 'string' && !!value.trim(),
     [],
   );
 
@@ -19,10 +19,10 @@ const RegisterForm = () => {
       const nickname = formData.get('nickname');
 
       if (
-        isEmptyStringField(email) ||
-        isEmptyStringField(password) ||
-        isEmptyStringField(passwordConfirm) ||
-        isEmptyStringField(nickname)
+        !validateStringField(email) ||
+        !validateStringField(password) ||
+        !validateStringField(passwordConfirm) ||
+        !validateStringField(nickname)
       ) {
         return alert('입력하지 않은 값이 있습니다.');
       }
@@ -41,7 +41,7 @@ const RegisterForm = () => {
 
       console.log('회원가입 성공');
     },
-    [isEmptyStringField],
+    [validateStringField],
   );
 
   return (
