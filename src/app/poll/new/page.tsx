@@ -107,7 +107,7 @@ const Page = () => {
             className="p-[8px] ml-[8px]"
             style={{height: 'fit-content', cursor: 'pointer'}}
           >
-            {blob ? '업로드' : '수정'}
+            {blob ? '수정' : '업로드'}
           </label>
         </div>
         <input
