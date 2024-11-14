@@ -149,3 +149,42 @@ export async function postPollOption({pollId, selectedOptionIds}: PostPollOption
 
   return result;
 }
+
+export interface CreatePollRequestParam {
+  title: string;
+  description: string;
+  thumbnail_url?: string;
+  allow_multiple: boolean;
+  end_date?: string; // TODO. date를 어떤 형식으로 넘겨야 하는지
+  options: string[];
+}
+
+export async function createNewPoll({
+  title,
+  description,
+  thumbnail_url,
+  allow_multiple,
+  end_date,
+  options,
+}: CreatePollRequestParam) {
+  const data = {
+    author_id: process.env.TEST_USER_ID,
+    title,
+    description,
+    allow_multiple,
+    options: {
+      create: options.map(content => ({
+        author_id: process.env.TEST_USER_ID,
+        content,
+      })),
+    },
+  } as any;
+
+  thumbnail_url && (data.thumbnail_url = thumbnail_url);
+
+  const poll = await prisma.poll.create({
+    data,
+  });
+
+  return poll;
+}

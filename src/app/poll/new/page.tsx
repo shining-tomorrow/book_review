@@ -1,5 +1,6 @@
 'use client';
 
+import {CreatePollRequestParam} from '@/db/poll';
 import {PutBlobResult} from '@vercel/blob';
 import {DateTime} from 'luxon';
 import Image from 'next/image';
@@ -19,10 +20,40 @@ const Page = () => {
     const formData = new FormData(event.target as HTMLFormElement);
     const formDataArray = Array.from(formData.entries());
 
-    const formValues = {};
+    const temp: {[key: string]: any} = {};
 
     formDataArray.forEach(([key, value]) => {
-      console.log(key, value);
+      temp[key] = value;
+    });
+
+    if (!temp.title || !temp.description) {
+      alert('제목과 설명은 필수 입력 사항입니다.');
+
+      return;
+    }
+
+    console.log('temp', temp);
+    const requestBody: Partial<CreatePollRequestParam> = {
+      title: temp.title,
+      description: temp.description,
+      allow_multiple: isAllowMultipleChoice,
+      ...(hasEndDate && temp.end_date ? {end_date: temp.end_date} : {}),
+    };
+
+    blob?.url && (requestBody.thumbnail_url = blob.url);
+
+    fetch('/api/poll', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    }).then(res => {
+      if (res.ok) {
+        alert('투표 생성 완료');
+      }
+
+      console.log('res', res);
     });
   };
 
@@ -47,28 +78,6 @@ const Page = () => {
     const newBlob = (await response.json()) as PutBlobResult;
 
     setBlob(newBlob);
-  };
-
-  const handleChangeHasEndDate = ({target}: any) => {
-    switch (target.id) {
-      case 'has_end_date':
-        setHasEndDate(target.checked);
-        break;
-      case 'not_has_end_date':
-        setHasEndDate(!target.checked);
-        break;
-    }
-  };
-
-  const handleChangeIsAllowMultipleChoice = ({target}: any) => {
-    switch (target.id) {
-      case 'allow_multiple_choice':
-        setIsAllowMultipleChoice(target.checked);
-        break;
-      case 'not_allow_multiple_choice':
-        setIsAllowMultipleChoice(!target.checked);
-        break;
-    }
   };
 
   return (
@@ -129,6 +138,19 @@ const Page = () => {
       </div>
 
       <div className="flex w-full pt-[6px]">
+        <label className="w-[150px]" htmlFor="options">
+          투표 항목
+        </label>
+        <input
+          className="flex-grow"
+          type="text"
+          id="title"
+          name="title"
+          placeholder="투표 제목을 입력해주세요."
+        ></input>
+      </div>
+
+      <div className="flex w-full pt-[6px]">
         {/* label 태그가 input 요소를 감싸면 텍스트를 클릭했을 때도 선택 된다 */}
         <div className="w-[150px] pb-[10px]">투표 마감 날짜 여부</div>
         <div>
@@ -139,8 +161,7 @@ const Page = () => {
               id="has_end_date"
               name="has_end_date"
               checked={hasEndDate}
-              value="true"
-              onChange={handleChangeHasEndDate}
+              onChange={e => setHasEndDate(e.target.checked)}
             />
             있음
           </label>
@@ -151,8 +172,7 @@ const Page = () => {
               id="not_has_end_date"
               name="not_has_end_date"
               checked={!hasEndDate}
-              value="false"
-              onChange={handleChangeHasEndDate}
+              onChange={e => setHasEndDate(!e.target.checked)}
             />
             없음
           </label>
@@ -178,8 +198,7 @@ const Page = () => {
               id="allow_multiple_choice"
               name="allow_multiple_choice"
               checked={isAllowMultipleChoice}
-              value="true"
-              onChange={handleChangeIsAllowMultipleChoice}
+              onChange={e => setIsAllowMultipleChoice(e.target.checked)}
             />
             가능
           </label>
@@ -190,8 +209,7 @@ const Page = () => {
               id="not_allow_multiple_choice"
               name="not_allow_multiple_choice"
               checked={!isAllowMultipleChoice}
-              value="false"
-              onChange={handleChangeIsAllowMultipleChoice}
+              onChange={e => setIsAllowMultipleChoice(!e.target.checked)}
             />
             불가능
           </label>
