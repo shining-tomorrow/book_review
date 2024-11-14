@@ -139,6 +139,7 @@ const Page = () => {
               id="has_end_date"
               name="has_end_date"
               checked={hasEndDate}
+              value="true"
               onChange={handleChangeHasEndDate}
             />
             있음
@@ -150,6 +151,7 @@ const Page = () => {
               id="not_has_end_date"
               name="not_has_end_date"
               checked={!hasEndDate}
+              value="false"
               onChange={handleChangeHasEndDate}
             />
             없음
@@ -176,6 +178,7 @@ const Page = () => {
               id="allow_multiple_choice"
               name="allow_multiple_choice"
               checked={isAllowMultipleChoice}
+              value="true"
               onChange={handleChangeIsAllowMultipleChoice}
             />
             가능
@@ -187,6 +190,7 @@ const Page = () => {
               id="not_allow_multiple_choice"
               name="not_allow_multiple_choice"
               checked={!isAllowMultipleChoice}
+              value="false"
               onChange={handleChangeIsAllowMultipleChoice}
             />
             불가능
