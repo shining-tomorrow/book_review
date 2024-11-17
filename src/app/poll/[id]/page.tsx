@@ -3,6 +3,7 @@
 import {DetailPollItem, OptionItem} from '@/db/poll';
 import PollResult from '@/ui/poll/PollResult';
 import PollView from '@/ui/poll/PollView';
+import {useSession} from 'next-auth/react';
 import {useParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 
@@ -63,6 +64,7 @@ const MockPollItem: DetailPollItem = {
 
 const Page = () => {
   const {id: pollId} = useParams();
+  const {data: session} = useSession();
 
   const [isResultView, setIsResultView] = useState(true);
   const [response, setResponse] = useState<DetailPollItem>();
@@ -111,7 +113,7 @@ const Page = () => {
       </div>
 
       {/* TODO. 수정, 삭제 버튼 추가하기 */}
-      {isResultView && response.author_id === process.env.TEST_USER_ID && (
+      {isResultView && response.author_id === (session as any)?.user?.id && (
         <div className="flex">
           <div className="ml-auto">
             <span>수정</span> | <span>삭제</span>
