@@ -47,6 +47,7 @@ const Page = () => {
   const handleClickPollItem = () => {
     if (!(session as any)?.user?.id) {
       alert('로그인이 필요한 페이지입니다.');
+      // 현재 페이지로 리다이렉트 시켜줌
       signIn();
     }
   };
