@@ -22,20 +22,6 @@ export interface PollItem {
   thumbnail_url: string | null; // 투표 만들 때 이미지 등록 안 했으면 디폴트 이미지 노출
 }
 
-const mockPollList: PollItem[] = Array.from({length: 10}, (_, i) => ({
-  id: String(i),
-  title:
-    i % 2
-      ? '최애 발레 슈즈 투표'
-      : '여러분의 최애 발레 슈즈를 투표해주세요. 길게길게testesteststestetstsettetestestesteststestetstsettetes',
-  vote_count: 3,
-  has_voted: Boolean(i % 2),
-  thumbnail_url:
-    i % 2 === 0
-      ? null
-      : 'https://zjnkgnavmphkyf5n.public.blob.vercel-storage.com/nihal-demirci-erenay-UYG1U5wj3Tk-unsplash-RKVLJAGugUPwH0o5x4eWvNUCq2Q9PX.jpg',
-}));
-
 const Page = () => {
   const [pollList, setPollList] = useState<PollListItem[]>([]);
   const bottomPosition = NavBarHeight + 8;
@@ -46,7 +32,7 @@ const Page = () => {
       .then(response => response.json())
       .then(response => {
         if (!ignore) {
-          setPollList([...response, ...mockPollList]);
+          setPollList([...response]);
         }
       });
 
