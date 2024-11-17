@@ -1,12 +1,13 @@
 import {prisma} from '@/db/client';
+import {GetServerSidePropsContext, NextApiRequest, NextApiResponse} from 'next';
 import type {AuthOptions, SessionStrategy} from 'next-auth';
-import NextAuth from 'next-auth';
+import NextAuth, {getServerSession} from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
 
-export const AUTH_OPTIONS: AuthOptions = {
+const AUTH_OPTIONS: AuthOptions = {
   session: {
     strategy: 'jwt' as SessionStrategy,
     maxAge: 60 * 60 * 24,
@@ -92,3 +93,11 @@ export const AUTH_OPTIONS: AuthOptions = {
 const handler = NextAuth(AUTH_OPTIONS);
 
 export {handler as GET, handler as POST};
+export const getSession = handler.auth;
+
+// Use it in server contexts
+export function auth(
+  ...args: [GetServerSidePropsContext['req'], GetServerSidePropsContext['res']] | [NextApiRequest, NextApiResponse] | []
+) {
+  return getServerSession(...args, AUTH_OPTIONS);
+}
