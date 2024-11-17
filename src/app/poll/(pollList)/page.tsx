@@ -2,6 +2,7 @@
 
 import {PollListItem} from '@/db/poll';
 import clsx from 'clsx';
+import {signIn, useSession} from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useEffect, useState} from 'react';
@@ -23,6 +24,8 @@ export interface PollItem {
 }
 
 const Page = () => {
+  const {data: session} = useSession();
+
   const [pollList, setPollList] = useState<PollListItem[]>([]);
   const bottomPosition = NavBarHeight + 8;
 
@@ -41,6 +44,13 @@ const Page = () => {
     };
   }, []);
 
+  const handleClickPollItem = () => {
+    if (!(session as any)?.user?.id) {
+      alert('로그인이 필요한 페이지입니다.');
+      signIn();
+    }
+  };
+
   return (
     <div>
       {/* 설문 조사 리스트 */}
@@ -50,6 +60,7 @@ const Page = () => {
             href={'/poll/' + id}
             className={clsx('border-[1px] border-gray-200 p-4 rounded-[8px]', idx > 0 && 'mt-4')}
             key={id}
+            onClick={handleClickPollItem}
           >
             <div className="flex flex-row w-full items-center">
               <div className="w-[60px] h-[60px] overflow-hidden flex justify-center items-center rounded-full bg-[#e6e7e9]">
