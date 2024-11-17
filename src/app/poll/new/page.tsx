@@ -5,6 +5,7 @@ import {PutBlobResult} from '@vercel/blob';
 import {DateTime} from 'luxon';
 import Image from 'next/image';
 import {FormEvent, useState} from 'react';
+import {FaImages} from 'react-icons/fa6';
 import {DefaultImage} from '../../../../const';
 
 const Page = () => {
@@ -97,37 +98,45 @@ const Page = () => {
 
       <div className="flex w-full pt-[6px]">
         <div className="w-[150px]">투표 썸네일 (선택)</div>
-        <div className="flex flex-grow">
+        <div className="flex flex-grow items-center">
           {/* TODO: 디폴트 이미지 넣기 */}
-          <Image
-            src={blob ? blob.url : DefaultImage}
-            alt={''}
-            width={168}
-            height={168}
-            sizes="168px"
-            style={{
-              width: '168px',
-              height: 'auto',
-            }}
-          />
+          {blob?.url ? (
+            <Image
+              src={blob ? blob.url : DefaultImage}
+              alt={''}
+              width={168}
+              height={168}
+              sizes="168px"
+              style={{
+                width: '168px',
+                height: 'auto',
+              }}
+            />
+          ) : (
+            <div className="flex justify-center items-center w-[168px] h-[168px] bg-customGray">
+              <FaImages size="30" />
+            </div>
+          )}
           {/* 기본 인풋.type=file 스타일은 수정할 수 없어 보이지 않게 함. 대신 label로 탐색기(파인더) 열기 */}
-          <label
-            htmlFor="thumbnail_url"
-            className="p-[8px] ml-[8px]"
-            style={{height: 'fit-content', cursor: 'pointer'}}
-          >
-            {blob ? '수정' : '업로드'}
-          </label>
+          <div>
+            <label
+              htmlFor="thumbnail_url"
+              className="px-[8px] py-[4px] ml-[8px] rounded-[6px] border-[1px] border-black"
+              style={{height: 'fit-content', cursor: 'pointer'}}
+            >
+              {blob ? '수정' : '업로드'}
+            </label>
+            <input
+              className="flex-grow"
+              type="file"
+              id="thumbnail_url"
+              name="thumbnail_url"
+              accept=".jpg, .jpeg, .png"
+              onChange={handleChange}
+              style={{display: 'none'}}
+            />
+          </div>
         </div>
-        <input
-          className="flex-grow"
-          type="file"
-          id="thumbnail_url"
-          name="thumbnail_url"
-          accept=".jpg, .jpeg, .png"
-          onChange={handleChange}
-          style={{display: 'none'}}
-        />
       </div>
 
       <div className="flex w-full pt-[6px]">
