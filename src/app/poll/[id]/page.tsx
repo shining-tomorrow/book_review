@@ -74,6 +74,9 @@ const Page = () => {
     fetch('/api/poll/' + pollId)
       .then(response => response.json())
       .then(response => {
+        /**
+         * TODO. 목데이터 보여주는 부분 대신 에러 화면 보여주기
+         */
         const value = response ?? MockPollItem;
         setResponse(value);
         let _topOptions = [value.options[0]];
@@ -87,6 +90,10 @@ const Page = () => {
         });
 
         setTopOptions(_topOptions);
+
+        // 투표했는지 확인하기
+        const hasVoted = value.options.some((option: OptionItem) => option.has_voted);
+        setIsResultView(hasVoted);
       });
   };
 
