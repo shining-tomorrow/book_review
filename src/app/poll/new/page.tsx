@@ -6,10 +6,12 @@ import {DateTime} from 'luxon';
 import Image from 'next/image';
 import {FormEvent, useState} from 'react';
 import {FaImages} from 'react-icons/fa6';
+import {LuMinusCircle, LuPlusCircle} from 'react-icons/lu';
 import {DefaultImage} from '../../../../const';
 
 const Page = () => {
   const [blob, setBlob] = useState<PutBlobResult | null>(null);
+  const [options, setOptions] = useState<string[]>(['']);
   const [hasEndDate, setHasEndDate] = useState(false);
   const [isAllowMultipleChoice, setIsAllowMultipleChoice] = useState(false);
 
@@ -81,6 +83,24 @@ const Page = () => {
     setBlob(newBlob);
   };
 
+  const handleChangeOption = (target: HTMLInputElement, index: number) => {
+    setOptions(prev => {
+      return prev.map((option, idx) => {
+        if (idx === index) {
+          return target.value;
+        }
+
+        return option;
+      });
+    });
+  };
+
+  const handleClickRemoveOption = (index: number) => {
+    setOptions(prev => {
+      return prev.filter((_, idx) => idx !== index);
+    });
+  };
+
   return (
     <form className="flex flex-col items-center justify-center w-[85%] mt-[10px]" onSubmit={handleSubmit}>
       <div className="flex w-full pt-[6px]">
@@ -147,16 +167,38 @@ const Page = () => {
       </div>
 
       <div className="flex w-full pt-[6px]">
-        <label className="w-[150px]" htmlFor="options">
-          투표 항목
-        </label>
-        <input
-          className="flex-grow"
-          type="text"
-          id="title"
-          name="title"
-          placeholder="투표 제목을 입력해주세요."
-        ></input>
+        <div className="w-[150px]">투표 항목</div>
+        <div className="flex flex-col flex-grow">
+          {options.map((option, index) => {
+            return (
+              <div className="flex items-center" key={'option#' + index}>
+                <span className="mr-[4px]">&nbsp;{index + 1}&nbsp;</span>
+                <input
+                  className="flex-grow p-[4px] my-[4px]"
+                  type="text"
+                  id={'option#' + index}
+                  name={'option#' + index}
+                  placeholder="투표 항목을 입력해주세요."
+                  value={options[index]}
+                  onChange={e => handleChangeOption(e.target, index)}
+                />
+                {index == 0 ? (
+                  <LuPlusCircle
+                    size="20"
+                    className="ml-[4px] cursor-pointer"
+                    onClick={() => setOptions(prev => [...prev, ''])}
+                  />
+                ) : (
+                  <LuMinusCircle
+                    size="20"
+                    className="ml-[4px] cursor-pointer"
+                    onClick={() => handleClickRemoveOption(index)}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div className="flex w-full pt-[6px]">
