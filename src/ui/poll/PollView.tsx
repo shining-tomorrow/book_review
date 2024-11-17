@@ -7,12 +7,12 @@ const PollView = ({
   id,
   options,
   setIsResultView,
-  getPollList,
+  getPollDetail,
 }: {
   id: string;
   options: OptionItem[];
   setIsResultView: Function;
-  getPollList: Function;
+  getPollDetail: Function;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -48,7 +48,7 @@ const PollView = ({
       setIsLoading(false);
 
       setIsResultView(true);
-      getPollList();
+      getPollDetail();
     });
   };
 
