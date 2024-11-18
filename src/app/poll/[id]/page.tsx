@@ -79,9 +79,10 @@ const Page = () => {
          */
         const value = response ?? MockPollItem;
         setResponse(value);
-        let _topOptions = [value.options[0]];
+        const [first, ...otherOptions] = value.options;
+        let _topOptions = [first];
 
-        value.options.forEach((option: OptionItem) => {
+        otherOptions.forEach((option: OptionItem) => {
           if (option.vote_count > _topOptions[0].vote_count) {
             _topOptions = [option];
           } else if (option.vote_count === _topOptions[0].vote_count) {
