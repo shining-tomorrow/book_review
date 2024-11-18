@@ -114,7 +114,7 @@ const Page = () => {
           <div>작성자: {response.author_nickname}</div>
           {/* end_date 타입 확인하기 */}
           <div>
-            {response.end_date ? String(response.end_date) : '마감 없음'} |{' '}
+            {response.end_date ? '마감 : ' + String(response.end_date) : '마감 없음'} |{' '}
             {response.allow_multiple ? '복수 선택' : '단일 선택'} | {response.vote_count}명 참여
           </div>
         </div>
