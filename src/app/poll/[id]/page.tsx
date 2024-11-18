@@ -4,7 +4,7 @@ import {DetailPollItem, OptionItem} from '@/db/poll';
 import PollResult from '@/ui/poll/PollResult';
 import PollView from '@/ui/poll/PollView';
 import {useSession} from 'next-auth/react';
-import {useParams} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 
 const MockPollItem: DetailPollItem = {
@@ -63,6 +63,7 @@ const MockPollItem: DetailPollItem = {
 };
 
 const Page = () => {
+  const router = useRouter();
   const {id: pollId} = useParams();
   const {data: session} = useSession();
 
@@ -102,6 +103,25 @@ const Page = () => {
     getPollDetail();
   }, [pollId]);
 
+  const handleClickDelete = async () => {
+    const response = await fetch('/api/poll/' + pollId, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status === 200) {
+      alert('투표를 삭제했습니다.');
+
+      router.push('/poll');
+
+      return;
+    }
+
+    alert('투표 삭제가 실패했습니다.');
+  };
+
   if (!response) {
     return null;
   }
@@ -121,10 +141,10 @@ const Page = () => {
       </div>
 
       {/* TODO. 수정, 삭제 버튼 추가하기 */}
-      {isResultView && response.author_id === (session as any)?.user?.id && (
+      {response.author_id === (session as any)?.user?.id && (
         <div className="flex">
           <div className="ml-auto">
-            <span>수정</span> | <span>삭제</span>
+            <span>수정</span> | <button onClick={handleClickDelete}>삭제</button>
           </div>
         </div>
       )}

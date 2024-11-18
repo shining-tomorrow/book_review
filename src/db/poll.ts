@@ -208,3 +208,13 @@ export async function createNewPoll({
 
   return poll;
 }
+
+export async function deletePoll(pollId: string) {
+  const deletePoll = await prisma.poll.delete({
+    where: {
+      id: pollId,
+    },
+  });
+
+  return deletePoll;
+}
