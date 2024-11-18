@@ -29,7 +29,7 @@ const PollView = ({
 
     setIsLoading(true);
 
-    const requestBody: PostPollOptionRequest = {
+    const requestBody: Omit<PostPollOptionRequest, 'userId'> = {
       pollId: id,
       selectedOptionIds,
     };
