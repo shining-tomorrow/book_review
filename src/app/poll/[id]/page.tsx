@@ -136,6 +136,7 @@ const Page = () => {
           options={response.options}
           setIsResultView={setIsResultView}
           getPollDetail={getPollDetail}
+          isAllowMultipleChoice={response.allow_multiple}
         />
       )}
     </div>

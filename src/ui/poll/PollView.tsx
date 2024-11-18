@@ -8,11 +8,13 @@ const PollView = ({
   options,
   setIsResultView,
   getPollDetail,
+  isAllowMultipleChoice,
 }: {
   id: string;
   options: OptionItem[];
   setIsResultView: Function;
   getPollDetail: Function;
+  isAllowMultipleChoice: boolean;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,6 +26,13 @@ const PollView = ({
 
     if (!selectedOptionIds.length) {
       alert('투표할 항목을 선택해주세요.');
+
+      return;
+    }
+
+    if (!isAllowMultipleChoice && selectedOptionIds.length > 1) {
+      alert('복수 선택이 불가한 투표입니다.');
+
       return;
     }
 
