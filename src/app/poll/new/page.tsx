@@ -4,12 +4,15 @@ import {CreatePollRequestParam} from '@/db/poll';
 import {PutBlobResult} from '@vercel/blob';
 import {DateTime} from 'luxon';
 import Image from 'next/image';
+import {useRouter} from 'next/navigation';
 import {FormEvent, useState} from 'react';
 import {FaImages} from 'react-icons/fa6';
 import {LuMinusCircle, LuPlusCircle} from 'react-icons/lu';
 import {DefaultImage} from '../../../../const';
 
 const Page = () => {
+  const router = useRouter();
+
   const [blob, setBlob] = useState<PutBlobResult | null>(null);
   const [options, setOptions] = useState<string[]>(['']);
   const [hasEndDate, setHasEndDate] = useState(false);
@@ -35,29 +38,49 @@ const Page = () => {
       return;
     }
 
-    console.log('temp', temp);
+    const validOptions = options.filter(option => !!option);
+
+    if (validOptions.length < 2) {
+      alert('투표 항목을 2개 이상 만들어 주세요.');
+
+      return;
+    }
+
+    const endDate = new Date(temp.end_date);
+
+    if (hasEndDate && isNaN(endDate.getTime())) {
+      alert('투표 마감 날짜를 입력해주세요.');
+
+      return;
+    }
+
     const requestBody: Partial<CreatePollRequestParam> = {
       title: temp.title,
       description: temp.description,
+      ...(blob?.url ? {thumbnail_url: blob.url} : {}),
       allow_multiple: isAllowMultipleChoice,
-      ...(hasEndDate && temp.end_date ? {end_date: temp.end_date} : {}),
+      ...(hasEndDate && temp.end_date ? {end_date: endDate} : {}),
+      options: validOptions,
     };
 
-    blob?.url && (requestBody.thumbnail_url = blob.url);
-
-    fetch('/api/poll', {
+    const response = await fetch('/api/poll/new', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(requestBody),
-    }).then(res => {
-      if (res.ok) {
-        alert('투표 생성 완료');
-      }
-
-      console.log('res', res);
     });
+
+    if (response.ok) {
+      alert('투표 생성 완료');
+
+      const result = await response.json();
+
+      router.push('/poll/' + result.id);
+      return;
+    }
+
+    alert('투표 생성에 실패했습니다.');
   };
 
   const handleChange = async (event: any) => {
@@ -176,6 +199,7 @@ const Page = () => {
                 <input
                   className="flex-grow p-[4px] my-[4px]"
                   type="text"
+                  autoComplete="off"
                   id={'option#' + index}
                   name={'option#' + index}
                   placeholder="투표 항목을 입력해주세요."

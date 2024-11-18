@@ -1,4 +1,4 @@
-import {createNewPoll, fetchPollList} from '@/db/poll';
+import {fetchPollList} from '@/db/poll';
 import {NextRequest, NextResponse} from 'next/server';
 import {auth} from '../auth/[...nextauth]/route';
 
@@ -9,15 +9,6 @@ export async function GET(request: NextRequest) {
   try {
     let response = await fetchPollList(isCurrent, session?.user?.id);
 
-    return NextResponse.json(response);
-  } catch (e) {
-    return NextResponse.json({error: 'SQL Error'}, {status: 500});
-  }
-}
-
-export async function POST(request: Request) {
-  try {
-    let response = await createNewPoll(await request.json());
     return NextResponse.json(response);
   } catch (e) {
     return NextResponse.json({error: 'SQL Error'}, {status: 500});

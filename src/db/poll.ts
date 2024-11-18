@@ -160,8 +160,21 @@ export interface CreatePollRequestParam {
   description: string;
   thumbnail_url?: string;
   allow_multiple: boolean;
-  end_date?: string; // TODO. date를 어떤 형식으로 넘겨야 하는지
+  end_date?: Date;
   options: string[];
+  userId: string;
+}
+
+export interface CreatePollResponse {
+  id: string; // "0d48deec-423d-47ba-94af-cffae1f9387f",
+  created_at: Date; //"2024-11-18T14:09:24.128Z",
+  updated_at: Date; //"2024-11-18T14:09:24.128Z",
+  title: string; //"회식 날짜 정하기",
+  author_id: string; //"b4479bc8-21fc-4bba-bb96-f46f30d52910",
+  description: string; //"회식 회식",
+  thumbnail_url: string | null; //null,
+  end_date: Date | null; //"2024-11-19T00:00:00.000Z",
+  allow_multiple: boolean; //false
 }
 
 export async function createNewPoll({
@@ -171,21 +184,23 @@ export async function createNewPoll({
   allow_multiple,
   end_date,
   options,
-}: CreatePollRequestParam) {
+  userId,
+}: CreatePollRequestParam): Promise<CreatePollResponse> {
   const data = {
-    author_id: process.env.TEST_USER_ID,
+    author_id: userId,
     title,
     description,
     allow_multiple,
     options: {
       create: options.map(content => ({
-        author_id: process.env.TEST_USER_ID,
+        author_id: userId,
         content,
       })),
     },
   } as any;
 
   thumbnail_url && (data.thumbnail_url = thumbnail_url);
+  end_date && (data.end_date = end_date);
 
   const poll = await prisma.poll.create({
     data,
