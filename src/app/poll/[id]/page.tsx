@@ -3,7 +3,8 @@
 import {DetailPollItem, OptionItem} from '@/db/poll';
 import PollResult from '@/ui/poll/PollResult';
 import PollView from '@/ui/poll/PollView';
-import {useParams} from 'next/navigation';
+import {useSession} from 'next-auth/react';
+import {useParams, useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 
 const MockPollItem: DetailPollItem = {
@@ -62,21 +63,27 @@ const MockPollItem: DetailPollItem = {
 };
 
 const Page = () => {
+  const router = useRouter();
   const {id: pollId} = useParams();
+  const {data: session} = useSession();
 
   const [isResultView, setIsResultView] = useState(true);
   const [response, setResponse] = useState<DetailPollItem>();
   const [topOptions, setTopOptions] = useState<OptionItem[]>([]);
 
-  const getPollList = () => {
+  const getPollDetail = () => {
     fetch('/api/poll/' + pollId)
       .then(response => response.json())
       .then(response => {
+        /**
+         * TODO. 목데이터 보여주는 부분 대신 에러 화면 보여주기
+         */
         const value = response ?? MockPollItem;
         setResponse(value);
-        let _topOptions = [value.options[0]];
+        const [first, ...otherOptions] = value.options;
+        let _topOptions = [first];
 
-        value.options.forEach((option: OptionItem) => {
+        otherOptions.forEach((option: OptionItem) => {
           if (option.vote_count > _topOptions[0].vote_count) {
             _topOptions = [option];
           } else if (option.vote_count === _topOptions[0].vote_count) {
@@ -85,12 +92,35 @@ const Page = () => {
         });
 
         setTopOptions(_topOptions);
+
+        // 투표했는지 확인하기
+        const hasVoted = value.options.some((option: OptionItem) => option.has_voted);
+        setIsResultView(hasVoted);
       });
   };
 
   useEffect(() => {
-    getPollList();
+    getPollDetail();
   }, [pollId]);
+
+  const handleClickDelete = async () => {
+    const response = await fetch('/api/poll/' + pollId, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status === 200) {
+      alert('투표를 삭제했습니다.');
+
+      router.push('/poll');
+
+      return;
+    }
+
+    alert('투표 삭제가 실패했습니다.');
+  };
 
   if (!response) {
     return null;
@@ -104,17 +134,17 @@ const Page = () => {
           <div>작성자: {response.author_nickname}</div>
           {/* end_date 타입 확인하기 */}
           <div>
-            {response.end_date ? String(response.end_date) : '마감 없음'} |{' '}
+            {response.end_date ? '마감 : ' + String(response.end_date) : '마감 없음'} |{' '}
             {response.allow_multiple ? '복수 선택' : '단일 선택'} | {response.vote_count}명 참여
           </div>
         </div>
       </div>
 
       {/* TODO. 수정, 삭제 버튼 추가하기 */}
-      {isResultView && response.author_id === process.env.TEST_USER_ID && (
+      {response.author_id === (session as any)?.user?.id && (
         <div className="flex">
           <div className="ml-auto">
-            <span>수정</span> | <span>삭제</span>
+            <span>수정</span> | <button onClick={handleClickDelete}>삭제</button>
           </div>
         </div>
       )}
@@ -126,7 +156,8 @@ const Page = () => {
           id={response.id}
           options={response.options}
           setIsResultView={setIsResultView}
-          getPollList={getPollList}
+          getPollDetail={getPollDetail}
+          isAllowMultipleChoice={response.allow_multiple}
         />
       )}
     </div>

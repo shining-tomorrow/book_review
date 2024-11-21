@@ -15,10 +15,10 @@ export interface PollListItem {
   vote_count: number;
 }
 
-export async function fetchPollList(isCurrent: boolean): Promise<PollListItem[]> {
+export async function fetchPollList(isCurrent: boolean, userId?: string): Promise<PollListItem[]> {
   /**
-   * TODO 현재 로그인한 userId로 바꾸기
-   * "User" as user로 하면 에러 남
+   * TODO.
+   * UserId가 없는 경우 쿼리가 더 간단해질 수 있음
    */
   const {rows} = await sql.query(
     `
@@ -40,7 +40,7 @@ export async function fetchPollList(isCurrent: boolean): Promise<PollListItem[]>
       `${isCurrent ? ` where poll.end_date >= now() or poll.end_date is null` : ` where poll.end_date < now()`}` +
       ` group by poll.id, user_table.id
         order by poll.end_date desc`,
-    [process.env.TEST_USER_ID],
+    [userId],
   );
 
   return rows as unknown as PollListItem[];
@@ -73,7 +73,7 @@ export interface OptionItem {
   has_voted: boolean;
 }
 
-export async function fetchDetailPollItem(id: string): Promise<DetailPollItem> {
+export async function fetchDetailPollItem(id: string, userId?: string): Promise<DetailPollItem> {
   /**
    * where 절이 마지막에 위치해야 함
    */
@@ -116,7 +116,7 @@ export async function fetchDetailPollItem(id: string): Promise<DetailPollItem> {
     left join user_vote on poll_option.id = user_vote.option_id
     where poll_option.poll_id=$1
   `,
-    [id, process.env.TEST_USER_ID],
+    [id, userId],
   );
 
   rows[0].options = optionRows;
@@ -127,13 +127,18 @@ export async function fetchDetailPollItem(id: string): Promise<DetailPollItem> {
 export interface PostPollOptionRequest {
   pollId: string;
   selectedOptionIds: string[];
+  userId: string;
 }
 
-export async function postPollOption({pollId, selectedOptionIds}: PostPollOptionRequest): Promise<{count: number}> {
+export async function postPollOption({
+  pollId,
+  selectedOptionIds,
+  userId,
+}: PostPollOptionRequest): Promise<{count: number}> {
   await prisma.userVote.deleteMany({
     where: {
       AND: {
-        user_id: process.env.TEST_USER_ID,
+        user_id: userId,
         poll_id: pollId,
       },
     },
@@ -141,11 +146,75 @@ export async function postPollOption({pollId, selectedOptionIds}: PostPollOption
 
   const result = await prisma.userVote.createMany({
     data: selectedOptionIds.map(optionId => ({
-      user_id: process.env.TEST_USER_ID ?? '',
+      user_id: userId,
       poll_id: pollId,
       option_id: optionId,
     })),
   });
 
   return result;
+}
+
+export interface CreatePollRequestParam {
+  title: string;
+  description: string;
+  thumbnail_url?: string;
+  allow_multiple: boolean;
+  end_date?: Date;
+  options: string[];
+  userId: string;
+}
+
+export interface CreatePollResponse {
+  id: string; // "0d48deec-423d-47ba-94af-cffae1f9387f",
+  created_at: Date; //"2024-11-18T14:09:24.128Z",
+  updated_at: Date; //"2024-11-18T14:09:24.128Z",
+  title: string; //"회식 날짜 정하기",
+  author_id: string; //"b4479bc8-21fc-4bba-bb96-f46f30d52910",
+  description: string; //"회식 회식",
+  thumbnail_url: string | null; //null,
+  end_date: Date | null; //"2024-11-19T00:00:00.000Z",
+  allow_multiple: boolean; //false
+}
+
+export async function createNewPoll({
+  title,
+  description,
+  thumbnail_url,
+  allow_multiple,
+  end_date,
+  options,
+  userId,
+}: CreatePollRequestParam): Promise<CreatePollResponse> {
+  const data = {
+    author_id: userId,
+    title,
+    description,
+    allow_multiple,
+    options: {
+      create: options.map(content => ({
+        author_id: userId,
+        content,
+      })),
+    },
+  } as any;
+
+  thumbnail_url && (data.thumbnail_url = thumbnail_url);
+  end_date && (data.end_date = end_date);
+
+  const poll = await prisma.poll.create({
+    data,
+  });
+
+  return poll;
+}
+
+export async function deletePoll(pollId: string) {
+  const deletePoll = await prisma.poll.delete({
+    where: {
+      id: pollId,
+    },
+  });
+
+  return deletePoll;
 }

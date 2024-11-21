@@ -2,6 +2,7 @@
 
 import {PollListItem} from '@/db/poll';
 import clsx from 'clsx';
+import {signIn, useSession} from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useEffect, useState} from 'react';
@@ -22,21 +23,9 @@ export interface PollItem {
   thumbnail_url: string | null; // 투표 만들 때 이미지 등록 안 했으면 디폴트 이미지 노출
 }
 
-const mockPollList: PollItem[] = Array.from({length: 10}, (_, i) => ({
-  id: String(i),
-  title:
-    i % 2
-      ? '최애 발레 슈즈 투표'
-      : '여러분의 최애 발레 슈즈를 투표해주세요. 길게길게testesteststestetstsettetestestesteststestetstsettetes',
-  vote_count: 3,
-  has_voted: Boolean(i % 2),
-  thumbnail_url:
-    i % 2 === 0
-      ? null
-      : 'https://zjnkgnavmphkyf5n.public.blob.vercel-storage.com/nihal-demirci-erenay-UYG1U5wj3Tk-unsplash-RKVLJAGugUPwH0o5x4eWvNUCq2Q9PX.jpg',
-}));
-
 const Page = () => {
+  const {data: session} = useSession();
+
   const [pollList, setPollList] = useState<PollListItem[]>([]);
   const bottomPosition = NavBarHeight + 8;
 
@@ -46,7 +35,7 @@ const Page = () => {
       .then(response => response.json())
       .then(response => {
         if (!ignore) {
-          setPollList([...response, ...mockPollList]);
+          setPollList([...response]);
         }
       });
 
@@ -54,6 +43,14 @@ const Page = () => {
       ignore = true;
     };
   }, []);
+
+  const handleClickPollItem = () => {
+    if (!(session as any)?.user?.id) {
+      alert('로그인이 필요한 페이지입니다.');
+      // 현재 페이지로 리다이렉트 시켜줌
+      signIn();
+    }
+  };
 
   return (
     <div>
@@ -64,6 +61,7 @@ const Page = () => {
             href={'/poll/' + id}
             className={clsx('border-[1px] border-gray-200 p-4 rounded-[8px]', idx > 0 && 'mt-4')}
             key={id}
+            onClick={handleClickPollItem}
           >
             <div className="flex flex-row w-full items-center">
               <div className="w-[60px] h-[60px] overflow-hidden flex justify-center items-center rounded-full bg-[#e6e7e9]">

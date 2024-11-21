@@ -1,9 +1,9 @@
 'use client';
 
+import {BalletRecordItemForClient} from '@/app/api/record/route';
+import {BalletRecordResponse} from '@/db/balletRecord';
 import {DateTime} from 'luxon';
 import React, {useEffect, useState} from 'react';
-import {BalletRecordItemForClient} from '../api/record/route';
-import {BalletRecordResponse} from '../lib/data';
 import DailySummary from './daily-summary';
 
 const DEFAULT_BACKGROUND_COLOR_CLASS = 'bg-[#ebedf0]';

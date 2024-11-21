@@ -1,12 +1,11 @@
-import {OPTIONS} from '@/app/api/auth/[...nextauth]/route';
-import {getServerSession} from 'next-auth/next';
+import {auth} from '@/app/api/auth/[...nextauth]/route';
 import Image from 'next/image';
 import Link from 'next/link';
 import logoImage from '../../../public/logo.png';
 import BackButton from './BackButton';
 
 const Header = async () => {
-  const session = await getServerSession(OPTIONS);
+  const session = (await auth()) as any;
 
   return (
     <header className="fixed w-full bg-[#f5f5f5] h-header-height md:h-desktop-header-height z-[1000]">

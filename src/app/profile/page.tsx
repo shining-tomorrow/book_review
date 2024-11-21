@@ -23,19 +23,19 @@ export const getData = async (): Promise<{
 }> => {
   const {
     nickname = null,
-    profileImageUrl = null,
-    balletStartDate = null,
-    balletAcademy = null,
-    balletSessionsPerWeek = null,
+    profile_image_url = null,
+    ballet_start_date = null,
+    ballet_academy = null,
+    ballet_sessions_per_week = null,
   } = (await fetchUserProfile()) ?? {};
 
   return {
     userProfile: {
       nickname,
-      profileImageUrl: profileImageUrl ?? DEFAULT_PROFILE_IMAGE_URL,
-      balletStartDate,
-      balletAcademy,
-      balletSessionsPerWeek,
+      profileImageUrl: profile_image_url ?? DEFAULT_PROFILE_IMAGE_URL,
+      balletStartDate: ballet_start_date,
+      balletAcademy: ballet_academy,
+      balletSessionsPerWeek: ballet_sessions_per_week,
     },
   };
 };

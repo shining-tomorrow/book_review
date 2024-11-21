@@ -7,12 +7,14 @@ const PollView = ({
   id,
   options,
   setIsResultView,
-  getPollList,
+  getPollDetail,
+  isAllowMultipleChoice,
 }: {
   id: string;
   options: OptionItem[];
   setIsResultView: Function;
-  getPollList: Function;
+  getPollDetail: Function;
+  isAllowMultipleChoice: boolean;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,12 +26,19 @@ const PollView = ({
 
     if (!selectedOptionIds.length) {
       alert('투표할 항목을 선택해주세요.');
+
+      return;
+    }
+
+    if (!isAllowMultipleChoice && selectedOptionIds.length > 1) {
+      alert('복수 선택이 불가한 투표입니다.');
+
       return;
     }
 
     setIsLoading(true);
 
-    const requestBody: PostPollOptionRequest = {
+    const requestBody: Omit<PostPollOptionRequest, 'userId'> = {
       pollId: id,
       selectedOptionIds,
     };
@@ -48,7 +57,7 @@ const PollView = ({
       setIsLoading(false);
 
       setIsResultView(true);
-      getPollList();
+      getPollDetail();
     });
   };
 
