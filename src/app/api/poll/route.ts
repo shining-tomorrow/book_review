@@ -1,6 +1,6 @@
 import {fetchPollList} from '@/db/poll';
 import {NextRequest, NextResponse} from 'next/server';
-import {auth} from '../auth/[...nextauth]/route';
+import {auth} from '../auth/[...nextauth]/auth.util';
 
 export async function GET(request: NextRequest) {
   const isCurrent = request.nextUrl.searchParams.get('isCurrent') === 'true';

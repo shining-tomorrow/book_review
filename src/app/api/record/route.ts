@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {fetchBalletRecord, updateBalletDone} from '../../../db/balletRecord';
-import {auth} from '../auth/[...nextauth]/route';
+import {auth} from '../auth/[...nextauth]/auth.util';
 
 export async function PUT(request: NextRequest) {
   const {date, ballet_done} = await request.json();
