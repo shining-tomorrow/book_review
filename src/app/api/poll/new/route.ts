@@ -1,6 +1,6 @@
 import {createNewPoll} from '@/db/poll';
 import {NextRequest, NextResponse} from 'next/server';
-import {auth} from '../../auth/[...nextauth]/route';
+import {auth} from '../../auth/[...nextauth]/auth.util';
 
 export async function POST(request: NextRequest) {
   const session = (await auth()) as any;

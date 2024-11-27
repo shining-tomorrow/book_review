@@ -1,4 +1,4 @@
-import {auth} from '@/app/api/auth/[...nextauth]/route';
+import {auth} from '@/app/api/auth/[...nextauth]/auth.util';
 import Image from 'next/image';
 import Link from 'next/link';
 import logoImage from '../../../public/logo.png';
