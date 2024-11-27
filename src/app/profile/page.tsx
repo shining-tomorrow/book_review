@@ -18,7 +18,7 @@ const DEFAULT_PROFILE_IMAGE_URL =
  * getServerSideProps는 app 디렉토리 구조에서는 지원 안 한다고 함
  * TODO: nickname도 없으면 에러 처리 해야할 듯
  */
-export const getData = async (): Promise<{
+const getData = async (): Promise<{
   userProfile: UserProfile;
 }> => {
   const {
