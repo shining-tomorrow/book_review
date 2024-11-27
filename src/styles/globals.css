@@ -43,6 +43,11 @@ input[type='text']:focus {
   outline: none;
 }
 
+input,
+textarea {
+  background-color: white;
+}
+
 textarea {
   border: none;
   outline: none;
