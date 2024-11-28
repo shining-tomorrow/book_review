@@ -21,7 +21,7 @@ const WriteMenuModal = () => {
       {createPortal(
         <div
           onClick={handleClickOutside}
-          className="fixed z-[1] inset-0 bg-gray-600 bg-opacity-25 overflow-y-auto h-full w-full"
+          className="fixed z-cover-header inset-0 bg-popup-bg bg-opacity-popup-bg overflow-y-auto h-full w-full"
         >
           <div
             className="absolute m-auto left-0 right-0 border w-fit shadow-lg rounded-md bg-white"

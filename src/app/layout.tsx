@@ -24,9 +24,7 @@ export default function RootLayout({
         <NextAuthProvider>
           <PageProvider>
             <Header />
-            <div className="h-screen px-4 md:px-8 pb-bottom-nav-height overflow-auto pt-header-height md:pt-desktop-header-height">
-              {children}
-            </div>
+            {children}
             <BottomNavBar />
           </PageProvider>
         </NextAuthProvider>

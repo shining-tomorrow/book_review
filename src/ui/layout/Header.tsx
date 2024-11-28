@@ -8,8 +8,8 @@ const Header = async () => {
   const session = (await auth()) as any;
 
   return (
-    <header className="fixed w-full bg-[#f5f5f5] h-header-height md:h-desktop-header-height z-[1000]">
-      <div className="w-[clac(100%-32px)] h-[calc(100%-8px)] mx-[16px] mt-[8px] border-b border-lineColor flex items-center">
+    <header className="fixed w-full bg-[#f5f5f5] h-header-height md:h-desktop-header-height z-header-zIndex">
+      <div className="w-[clac(100%-32px)] h-[calc(100%-8px)] mx-header-x-margin mt-[8px] border-b border-lineColor flex items-center">
         <BackButton />
         <Image
           src={logoImage}
@@ -21,7 +21,7 @@ const Header = async () => {
             height: 'calc(100% - 8px)',
           }}
         />
-        <nav className="hidden md:flex absolute right-[18px]">
+        <nav className="hidden md:flex absolute right-[52px]">
           <Link href="/" className="px-4">
             Home
           </Link>
