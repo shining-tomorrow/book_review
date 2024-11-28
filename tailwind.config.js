@@ -22,6 +22,12 @@ module.exports = {
         'header-zIndex': 1000,
         'cover-header': 1001,
       },
+      margin: {
+        'header-x-margin': 16,
+      },
+      inset: {
+        'header-x-margin': 16,
+      },
     },
   },
   plugins: [],
