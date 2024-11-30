@@ -1,3 +1,4 @@
+import Feed from '@/ui/home/Feed';
 import Link from 'next/link';
 import {NavBarHeight} from '../../../const';
 
@@ -20,14 +21,17 @@ const Page = async () => {
 
   return (
     <div>
-      <div>
+      <div className="flex flex-col gap-2">
         {posts.map((post: any) => {
-          return (
-            <div key={post.id}>
-              <h1>{post.title}</h1>
-              <div>{post.content}</div>
-            </div>
-          );
+          const feed = {
+            id: post.id,
+            title: post.title,
+            description: post.content.replace(/<\/?[^>]+>/g, ' '),
+            date: post.created_at,
+            category: '',
+            views: post.views,
+          };
+          return <Feed key={post.id} feed={feed} dateFormat={{isISO: true}}></Feed>;
         })}
       </div>
       <Link href="/post/new">
