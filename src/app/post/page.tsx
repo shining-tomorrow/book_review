@@ -31,7 +31,11 @@ const Page = async () => {
             category: '',
             views: post.views,
           };
-          return <Feed key={post.id} feed={feed} dateFormat={{isISO: true}}></Feed>;
+          return (
+            <Link key={post.id} href={'/post/' + post.id}>
+              <Feed feed={feed} dateFormat={{isISO: true}}></Feed>
+            </Link>
+          );
         })}
       </div>
       <Link href="/post/new">
