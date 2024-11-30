@@ -4,6 +4,7 @@ import {createPortal} from 'react-dom';
 import {GoHome} from 'react-icons/go';
 import {IoCloseOutline} from 'react-icons/io5';
 import {MdHowToVote} from 'react-icons/md';
+import {TbWriting} from 'react-icons/tb';
 
 const SideBar = ({setIsSidebarOpen}: {setIsSidebarOpen: Dispatch<SetStateAction<boolean>>}) => {
   const sidebarContentEl: MutableRefObject<null | HTMLDivElement> = useRef(null);
@@ -31,6 +32,10 @@ const SideBar = ({setIsSidebarOpen}: {setIsSidebarOpen: Dispatch<SetStateAction<
               <Link href="/" className="flex mb-[8px]">
                 <GoHome size="20" className="mr-[4px]" />
                 Home
+              </Link>
+              <Link href="/post" className="flex mb-[8px]">
+                <TbWriting size="20" className="mr-[4px]" />
+                발레 포스팅
               </Link>
               <Link href="/poll" className="flex mb-[8px]">
                 <MdHowToVote size="20" className="mr-[4px]" />
