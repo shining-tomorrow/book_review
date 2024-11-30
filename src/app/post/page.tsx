@@ -1,20 +1,23 @@
 import Feed from '@/ui/home/Feed';
+import {unstable_cache} from 'next/cache';
 import Link from 'next/link';
 import {NavBarHeight} from '../../../const';
 
-const getAllPosts = async () => {
-  /**
-   * 서버 사이드에서는 full url을 넣어주어야 함
-   */
-  const res = await fetch(process.env.URL + '/api/post', {
-    method: 'GET',
-    cache: 'force-cache',
-  });
+/**
+ * 서버 사이드에서는 full url을 넣어주어야 함
+ * https://nextjs.org/docs/app/building-your-application/data-fetching/fetching#caching-data-with-an-orm-or-database
+ */
+const getAllPosts = unstable_cache(
+  async () => {
+    const res = await fetch(process.env.URL + '/api/post');
 
-  const posts = await res.json();
+    const posts = await res.json();
 
-  return posts;
-};
+    return posts;
+  },
+  ['posts'],
+  {revalidate: 3600, tags: ['posts']},
+);
 
 const Page = async () => {
   const posts = await getAllPosts();

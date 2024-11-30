@@ -1,4 +1,5 @@
 import {CreatePostRequestParam, createNewPost} from '@/db/post';
+import {revalidateTag} from 'next/cache';
 import {NextRequest, NextResponse} from 'next/server';
 import {auth} from '../../auth/[...nextauth]/auth.util';
 
@@ -13,6 +14,8 @@ export async function POST(request: NextRequest) {
   try {
     let data = await request.json();
     let response = await createNewPost({...data, userId} as CreatePostRequestParam);
+
+    revalidateTag('posts');
 
     return NextResponse.json(response);
   } catch (e) {
