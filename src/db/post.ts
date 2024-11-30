@@ -16,3 +16,9 @@ export async function createNewPost({title, content, userId}: CreatePostRequestP
 
   return post;
 }
+
+export const findAllPosts = async () => {
+  const posts = await prisma.balletPost.findMany();
+
+  return posts;
+};
