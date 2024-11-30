@@ -2,7 +2,7 @@
 import {useState} from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import {HeaderHeight, NavBarHeight} from '../../../const';
+import {NavBarHeight, isSmallScreenSize} from '../../../const';
 
 const toolbarHeight = 44;
 
@@ -13,6 +13,7 @@ const toolbarHeight = 44;
 const Editor = () => {
   const [content, setContent] = useState('');
 
+  const HeaderHeight = isSmallScreenSize() ? 48 : 56;
   const editorContentHeight = window.innerHeight - HeaderHeight - NavBarHeight - toolbarHeight;
   const modules = {
     toolbar: [
