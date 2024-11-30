@@ -1,5 +1,11 @@
+import Editor from '@/ui/common/Editor';
+
 const Page = () => {
-  return <div>Page</div>;
+  return (
+    <div>
+      <Editor />
+    </div>
+  );
 };
 
 export default Page;
