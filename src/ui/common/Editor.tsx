@@ -1,5 +1,6 @@
 'use client';
-import {useState} from 'react';
+
+import {Dispatch, SetStateAction} from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import {NavBarHeight, isSmallScreenSize} from '../../../const';
@@ -9,10 +10,14 @@ const toolbarHeight = 44;
 /**
  * react-quill github:
  * https://github.com/zenoamaro/react-quill
+ *
+ * 참고:https://cwdeveloper.tistory.com/62
+ * https://zindex.tistory.com/362
+ *
+ * TODO: image handler 추가하기
  */
-const Editor = () => {
-  const [content, setContent] = useState('');
 
+const Editor = ({content, setContent}: {content: string; setContent: Dispatch<SetStateAction<string>>}) => {
   const HeaderHeight = isSmallScreenSize() ? 48 : 56;
   const editorContentHeight = window.innerHeight - HeaderHeight - NavBarHeight - toolbarHeight;
   const modules = {
