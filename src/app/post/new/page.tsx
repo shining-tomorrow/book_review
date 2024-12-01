@@ -1,5 +1,6 @@
 'use client';
 
+import {revalidatePostList} from '@/app/actions/post';
 import Editor from '@/ui/common/Editor';
 import {useRouter} from 'next/navigation';
 import {useState} from 'react';
@@ -36,6 +37,9 @@ const Page = () => {
       alert('포스팅 생성 완료');
 
       const result = await response.json();
+
+      revalidatePostList();
+
       router.push('/post/' + result.id);
 
       return;

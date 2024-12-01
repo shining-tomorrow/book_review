@@ -15,7 +15,6 @@ const SideBar = ({setIsSidebarOpen}: {setIsSidebarOpen: Dispatch<SetStateAction<
     }
 
     setIsSidebarOpen(prev => {
-      console.log('prev', prev);
       return !prev;
     });
   };
