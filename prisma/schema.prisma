@@ -133,7 +133,6 @@ model CommentReaction {
 }
 
 // 발레 포스팅
-// 일단 대강 넣고 추후 수정 예정(인스타 포맷 생각 중!)
 
 model BalletPost {
   id             String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid

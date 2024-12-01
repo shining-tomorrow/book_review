@@ -11,13 +11,25 @@ interface Props {
     views: number;
     image?: string;
   };
+  dateFormat:
+    | {
+        isISO: true;
+      }
+    | {
+        isISO: false;
+        format?: string;
+      };
 }
 
-export default function Feed({feed}: Props) {
+export default function Feed({feed, dateFormat = {isISO: false}}: Props) {
+  const defaultFormat = 'yyyy-MM-dd';
+
   const parsedDescription = useMemo(() => feed.description.replace(/\n/g, ''), [feed.description]);
   const parsedDate = useMemo(() => {
     const today = DateTime.local();
-    const dateTime = DateTime.fromFormat(feed.date, 'yyyy-MM-dd');
+    const dateTime = dateFormat.isISO
+      ? DateTime.fromISO(feed.date)
+      : DateTime.fromFormat(feed.date, dateFormat.format ?? defaultFormat);
     const diff = today.diff(dateTime);
 
     if (diff.as('second') < 60) {
