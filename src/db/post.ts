@@ -22,3 +22,13 @@ export const findAllPosts = async () => {
 
   return posts;
 };
+
+export const findPostById = async (id: string) => {
+  const post = await prisma.balletPost.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  return post;
+};
