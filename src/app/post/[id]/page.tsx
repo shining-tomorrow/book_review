@@ -1,17 +1,20 @@
+import {findAllPosts, findPostById} from '@/db/post';
 import Link from 'next/link';
 import {NavBarHeight} from '../../../../const';
 
+/**
+ * 서버 컴포넌트에서는  own api route나 route handler에서 fetch하지 않는다
+ * 직접 server-side logic을 호출해야 한다.
+ * https://nextjs-faq.com/fetch-api-in-rsc
+ */
 const getPost = async (id: string) => {
-  const res = await fetch(process.env.URL + '/api/post/' + id, {
-    cache: 'force-cache',
-  });
-  const post = await res.json();
+  const post = await findPostById(id);
 
   return post;
 };
 
 export async function generateStaticParams() {
-  const posts = await fetch(process.env.URL + '/api/post', {cache: 'force-cache'}).then(res => res.json());
+  const posts = await findAllPosts();
 
   return posts.map((post: any) => ({
     id: post.id,
@@ -22,7 +25,7 @@ export async function generateMetadata({params}: {params: {id: string}}) {
   const post = await getPost(params.id);
 
   return {
-    title: post.title,
+    title: post?.title ?? '',
   };
 }
 
