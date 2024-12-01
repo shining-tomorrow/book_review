@@ -34,8 +34,12 @@ const Page = async ({params}: {params: {id: string}}) => {
 
   return (
     <div>
-      <div>{post.title}</div>
-      <div dangerouslySetInnerHTML={{__html: post.content}}></div>
+      {post && (
+        <>
+          <div>{post.title}</div>
+          <div dangerouslySetInnerHTML={{__html: post.content}}></div>
+        </>
+      )}
       <Link href="/post">
         <button className="fixed p-[16px] bg-buttonColor text-white" style={{bottom: NavBarHeight + 8, right: '2rem'}}>
           포스팅 목록 가기
