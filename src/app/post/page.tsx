@@ -1,17 +1,12 @@
+import {findAllPosts} from '@/db/post';
 import Feed from '@/ui/common/Feed';
 import {unstable_cache} from 'next/cache';
 import Link from 'next/link';
 import {NavBarHeight} from '../../../const';
 
-/**
- * 서버 사이드에서는 full url을 넣어주어야 함
- * https://nextjs.org/docs/app/building-your-application/data-fetching/fetching#caching-data-with-an-orm-or-database
- */
 const getAllPosts = unstable_cache(
   async () => {
-    const res = await fetch(process.env.URL + '/api/post');
-
-    const posts = await res.json();
+    const posts = findAllPosts();
 
     return posts;
   },
