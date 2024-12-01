@@ -11,7 +11,7 @@ interface Props {
     views: number;
     image?: string;
   };
-  dateFormat:
+  dateFormat?:
     | {
         isISO: true;
       }
