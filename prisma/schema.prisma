@@ -29,32 +29,35 @@ enum ReactionType {
 // 대문자 작성 시, prisma에서 대소문자 구분을 위해 소문자를 사용함. 이에 따라 sql문 쓰기가 어려워짐. 소문자와 언더바로만 쓰자.
 // balletStartDate: 발레 시작 날짜, 발레 N년차 확인 용도
 model User {
-  id                       String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email                    String            @unique @db.VarChar(100)
-  nickname                 String            @unique @db.VarChar(100)
-  is_admin                 Boolean           @default(false)
-  name                     String?           @db.VarChar(20)
-  phone                    String?           @db.VarChar(20)
-  birthday                 String?           @db.Char(8)
-  password                 String
-  created_at               DateTime          @default(now()) @db.Timestamptz
-  updated_at               DateTime          @updatedAt @db.Timestamptz
-  token                    String?
-  profile_image_url        String?
-  gender                   Gender?
-  ballet_start_date        DateTime?         @db.Timestamptz
-  ballet_academy           String?           @db.VarChar(25)
-  ballet_sessions_per_week Int?
-  posts                    Post[]
-  comments                 Comment[]
-  post_reactions           PostReaction[]
-  comment_reactions        CommentReaction[]
-  ballet_posts             BalletPost[]
-  ballet_record            BalletRecord[]
-  polls                    Poll[]
-  poll_comments            PollComment[]
-  user_vote                UserVote[]
-  poll_options             PollOption[]
+  id                            String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                         String                      @unique @db.VarChar(100)
+  nickname                      String                      @unique @db.VarChar(100)
+  is_admin                      Boolean                     @default(false)
+  name                          String?                     @db.VarChar(20)
+  phone                         String?                     @db.VarChar(20)
+  birthday                      String?                     @db.Char(8)
+  password                      String
+  created_at                    DateTime                    @default(now()) @db.Timestamptz
+  updated_at                    DateTime                    @updatedAt @db.Timestamptz
+  token                         String?
+  profile_image_url             String?
+  gender                        Gender?
+  ballet_start_date             DateTime?                   @db.Timestamptz
+  ballet_academy                String?                     @db.VarChar(25)
+  ballet_sessions_per_week      Int?
+  posts                         Post[]
+  comments                      Comment[]
+  post_reactions                PostReaction[]
+  comment_reactions             CommentReaction[]
+  ballet_posts                  BalletPost[]
+  ballet_post_comments          BalletPostComment[]
+  ballet_post_reactions         BalletPostReaction[]
+  ballet_post_comment_reactions BalletPostCommentReaction[]
+  ballet_record                 BalletRecord[]
+  polls                         Poll[]
+  poll_comments                 PollComment[]
+  user_vote                     UserVote[]
+  poll_options                  PollOption[]
 }
 
 // 게시판
@@ -135,54 +138,105 @@ model CommentReaction {
 // 발레 포스팅
 
 model BalletPost {
-  id             String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created_at     DateTime           @default(now()) @db.Timestamptz
-  updated_at     DateTime           @updatedAt @db.Timestamptz
-  title          String             @db.VarChar(200)
-  views          Int                @default(0)
-  author         User               @relation(fields: [author_id], references: [id])
-  author_id      String             @db.Uuid
+  id             String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at     DateTime                  @default(now()) @db.Timestamptz
+  updated_at     DateTime                  @updatedAt @db.Timestamptz
+  title          String                    @db.VarChar(200)
+  views          Int                       @default(0)
+  author         User                      @relation(fields: [author_id], references: [id])
+  author_id      String                    @db.Uuid
   content        String
-  ballet_records BalletPostRecord[]
+  category       BalletPostCategory        @relation(fields: [category_id], references: [id])
+  category_id    String                    @db.Uuid
+  comments       BalletPostComment[]
+  tags           BalletPostBalletPostTag[]
+  post_reactions BalletPostReaction[]
 }
 
+model BalletPostCategory {
+  id           String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String       @unique @db.VarChar(20)
+  ballet_posts BalletPost[]
+}
+
+model BalletPostTag {
+  id    String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name  String                    @unique @db.VarChar(20)
+  posts BalletPostBalletPostTag[]
+}
+
+model BalletPostBalletPostTag {
+  post    BalletPost    @relation(fields: [post_id], references: [id])
+  post_id String        @db.Uuid
+  tag     BalletPostTag @relation(fields: [tag_id], references: [id])
+  tag_id  String        @db.Uuid
+
+  @@id([post_id, tag_id])
+}
+
+model BalletPostComment {
+  id                String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content           String
+  author            User                        @relation(fields: [author_id], references: [id])
+  author_id         String                      @db.Uuid
+  post              BalletPost                  @relation(fields: [post_id], references: [id])
+  post_id           String                      @db.Uuid
+  parent            BalletPostComment?          @relation("CommentToComment", fields: [parent_id], references: [id])
+  parent_id         String?                     @db.Uuid
+  children          BalletPostComment[]         @relation("CommentToComment")
+  created_at        DateTime                    @default(now()) @db.Timestamptz
+  updated_at        DateTime                    @updatedAt @db.Timestamptz
+  comment_reactions BalletPostCommentReaction[]
+}
+
+model BalletPostReaction {
+  user     User         @relation(fields: [user_id], references: [id])
+  user_id  String       @db.Uuid
+  post     BalletPost   @relation(fields: [post_id], references: [id])
+  post_id  String       @db.Uuid
+  reaction ReactionType
+
+  @@id([user_id, post_id])
+}
+
+model BalletPostCommentReaction {
+  user       User              @relation(fields: [user_id], references: [id])
+  user_id    String            @db.Uuid
+  comment    BalletPostComment @relation(fields: [comment_id], references: [id])
+  comment_id String            @db.Uuid
+  reaction   ReactionType
+
+  @@id([user_id, comment_id])
+}
+
+// 발레 기록
 model BalletRecord {
-  id           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  date         DateTime           @db.Timestamptz
-  ballet_done  Boolean
-  ballet_posts BalletPostRecord[]
-  user         User               @relation(fields: [user_id], references: [id])
-  user_id      String             @db.Uuid
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  date        DateTime @db.Timestamptz
+  ballet_done Boolean
+  user        User     @relation(fields: [user_id], references: [id])
+  user_id     String   @db.Uuid
 
   @@unique([date, user_id])
-}
-
-model BalletPostRecord {
-  ballet_post      BalletPost   @relation(fields: [ballet_post_id], references: [id])
-  ballet_post_id   String       @db.Uuid
-  ballet_record    BalletRecord @relation(fields: [ballet_record_id], references: [id])
-  ballet_record_id String       @db.Uuid
-
-  @@id([ballet_post_id, ballet_record_id])
 }
 
 // 학원 히스토리 추가 예정
 
 // 투표
 model Poll {
-  id                String        @unique @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created_at        DateTime      @default(now()) @db.Timestamptz
-  updated_at        DateTime      @updatedAt @db.Timestamptz
-  title             String        @db.VarChar(200)
-  author            User          @relation(fields: [author_id], references: [id])
-  author_id         String        @db.Uuid
-  description       String
-  thumbnail_url     String?
-  poll_comments     PollComment[]
-  end_date          DateTime?     @db.Timestamptz
-  allow_multiple    Boolean
-  options           PollOption[]
-  user_vote         UserVote[]
+  id             String        @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at     DateTime      @default(now()) @db.Timestamptz
+  updated_at     DateTime      @updatedAt @db.Timestamptz
+  title          String        @db.VarChar(200)
+  author         User          @relation(fields: [author_id], references: [id])
+  author_id      String        @db.Uuid
+  description    String
+  thumbnail_url  String?
+  poll_comments  PollComment[]
+  end_date       DateTime?     @db.Timestamptz
+  allow_multiple Boolean
+  options        PollOption[]
+  user_vote      UserVote[]
 
   @@unique([end_date(sort: Desc), created_at(sort: Desc), author_id])
 }
