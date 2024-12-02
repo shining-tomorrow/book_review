@@ -1,5 +1,6 @@
 'use server';
 
+import {BalletPostCategories, BalletPostCategory, findAllBalletPostCategories} from '@/db/post';
 import {revalidateTag} from 'next/cache';
 
 /**
@@ -9,4 +10,17 @@ import {revalidateTag} from 'next/cache';
  */
 export const revalidatePostList = () => {
   revalidateTag('posts');
+};
+
+// todo. 해당 user가 만든 카테고리만 가져오게 하기
+export const getBalletPostCategory = async () => {
+  const categories: BalletPostCategories = await findAllBalletPostCategories();
+
+  return categories;
+};
+
+export const addBalletPostCategory = async (categoryName: string): Promise<BalletPostCategory> => {
+  const category = await addBalletPostCategory(categoryName);
+
+  return category;
 };
