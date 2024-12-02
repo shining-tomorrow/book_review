@@ -144,7 +144,7 @@ model BalletPost {
   updated_at     DateTime                  @updatedAt @db.Timestamptz
   title          String                    @db.VarChar(200)
   views          Int                       @default(0)
-  author         User                      @relation(fields: [author_id], references: [id])
+  author         User                      @relation(fields: [author_id], references: [id], onDelete: Cascade)
   author_id      String                    @db.Uuid
   content        String
   category       BalletPostCategory        @relation(fields: [category_id], references: [id])
@@ -158,7 +158,7 @@ model BalletPostCategory {
   id         String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name       String       @unique @db.VarChar(20)
   color      String
-  user       User         @relation(fields: [user_id], references: [id])
+  user       User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id    String       @db.Uuid
   created_at DateTime     @default(now()) @db.Timestamptz
   updated_at DateTime     @updatedAt @db.Timestamptz
