@@ -1,8 +1,8 @@
 import {findAllPosts} from '@/db/post';
 import Feed from '@/ui/common/Feed';
+import NewButton from '@/ui/post/NewButton';
 import {unstable_cache} from 'next/cache';
 import Link from 'next/link';
-import {NavBarHeight} from '../../../const';
 
 const getAllPosts = unstable_cache(
   async () => {
@@ -36,11 +36,7 @@ const Page = async () => {
           );
         })}
       </div>
-      <Link href="/post/new">
-        <button className="fixed p-[16px] bg-buttonColor text-white" style={{bottom: NavBarHeight + 8, right: '2rem'}}>
-          + 포스팅 추가
-        </button>
-      </Link>
+      <NewButton />
     </div>
   );
 };
