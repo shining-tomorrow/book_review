@@ -1,6 +1,7 @@
 'use client';
 
 import {revalidatePostList} from '@/app/actions/post';
+import {CreatePostRequestParam} from '@/db/post';
 import Editor from '@/ui/common/Editor';
 import {useRouter} from 'next/navigation';
 import {useState} from 'react';
@@ -9,6 +10,10 @@ import {NavBarHeight} from '../../../../const';
 const Page = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  /**
+   * TODO. categoryId 선택하는 로직 추가하기
+   */
+  const [categoryId, setCategoryId] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -21,10 +26,18 @@ const Page = () => {
   };
 
   const handleClickCreatePost = async () => {
-    const requestBody = {
+    if (!categoryId) {
+      alert('카테고리를 선택해주세요');
+
+      return;
+    }
+
+    const requestBody: Omit<CreatePostRequestParam, 'userId'> = {
       title,
       content,
+      category_id: categoryId,
     };
+
     const response = await fetch('/api/post/new', {
       method: 'POST',
       headers: {

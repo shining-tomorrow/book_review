@@ -7,13 +7,15 @@ export interface CreatePostRequestParam {
   title: string;
   content: string;
   userId: string;
+  category_id: string;
 }
-export async function createNewPost({title, content, userId}: CreatePostRequestParam): Promise<any> {
+export async function createNewPost({title, content, userId, category_id}: CreatePostRequestParam): Promise<any> {
   const post = await prisma.balletPost.create({
     data: {
       title,
       content,
       author_id: userId,
+      category_id,
     },
   });
 
