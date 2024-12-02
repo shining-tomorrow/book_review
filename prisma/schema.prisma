@@ -58,6 +58,7 @@ model User {
   poll_comments                 PollComment[]
   user_vote                     UserVote[]
   poll_options                  PollOption[]
+  BalletPostCategory            BalletPostCategory[]
 }
 
 // 게시판
@@ -154,9 +155,16 @@ model BalletPost {
 }
 
 model BalletPostCategory {
-  id           String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String       @unique @db.VarChar(20)
-  ballet_posts BalletPost[]
+  id         String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String       @unique @db.VarChar(20)
+  color      String
+  user       User         @relation(fields: [user_id], references: [id])
+  user_id    String       @db.Uuid
+  created_at DateTime     @default(now()) @db.Timestamptz
+  updated_at DateTime     @updatedAt @db.Timestamptz
+  BalletPost BalletPost[]
+
+  @@unique([user_id, name, color])
 }
 
 model BalletPostTag {
